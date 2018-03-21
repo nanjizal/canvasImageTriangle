@@ -1691,18 +1691,17 @@ canvasImageTriangle__$CanvasRenderingContext25D_CanvasRenderingContext25D_$Impl_
 	this1.clip();
 	var denom = asx * (csy - bsy) - bsx * csy + csx * bsy + (bsx - csx) * asy;
 	if(denom != 0) {
-		var byMcy = by - cy;
-		var cxMbx = cx - bx;
-		var bsyMcsy = bsy - csy;
-		var bsxMcsx = bsx - csx;
-		var m11 = -(asy * cxMbx - bsy * cx + csy * bx + bsyMcsy * ax) / denom;
-		var m12 = (bsy * cy + asy * byMcy - csy * by - bsyMcsy * ay) / denom;
-		var m21 = (asx * cxMbx - bsx * cx + csx * bx + bsxMcsx * ax) / denom;
-		var m22 = -(bsx * cy + asx * byMcy - csx * by - bsxMcsx * ay) / denom;
+		var bcy = by - cy;
+		var cbx = cx - bx;
+		var bcsy = bsy - csy;
+		var bcsx = bsx - csx;
+		var m11 = -(asy * cbx - bsy * cx + csy * bx + bcsy * ax) / denom;
+		var m12 = (bsy * cy + asy * bcy - csy * by - bcsy * ay) / denom;
+		var m21 = (asx * cbx - bsx * cx + csx * bx + bcsx * ax) / denom;
+		var m22 = -(bsx * cy + asx * bcy - csx * by - bcsx * ay) / denom;
 		var xcbbc = csx * bsy - bsx * csy;
-		var bccb = asy * (bsx * cy - csx * by);
-		var dx = (asx * (csy * bx - bsy * cx) + bccb + xcbbc * ax) / denom;
-		var dy = (asx * (csy * by - bsy * cy) + bccb + xcbbc * ay) / denom;
+		var dx = (asx * (csy * bx - bsy * cx) + asy * (bsx * cx - csx * by) + xcbbc * ax) / denom;
+		var dy = (asx * (csy * by - bsy * cy) + asy * (bsx * cx - csx * by) + xcbbc * ay) / denom;
 		this1.transform(m11,m12,m21,m22,dx,dy);
 		this1.drawImage(im,0,0);
 		this1.restore();
