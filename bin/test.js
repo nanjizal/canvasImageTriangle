@@ -147,7 +147,6 @@ var Main = function(surface_) {
 	a5.e10 = right1.z;
 	a5.e14 = pos1.z;
 	this.camera_mat = a5;
-	this.contextHandler = new canvasImageTriangle_ContextHandler(this.surface);
 	this.loader = new htmlHelper_tools_ImageLoader([this.picture],$bind(this,this.onLoaded));
 };
 Main.__name__ = true;
@@ -330,7 +329,6 @@ Main.prototype = {
 		out1.e6 = a22 * b41 + a61 * b51 + a101 * b61;
 		out1.e10 = a22 * b81 + a61 * b91 + a101 * b101;
 		out1.e14 = a22 * b121 + a61 * b131 + a101 * b141 + a141;
-		this.contextHandler.setTransform(this.temp_mat1);
 		var im_width = this.image.width;
 		var im_height = this.image.height;
 		var verts = [{ x : -1, y : -1, z : 0, u : 0, v : 0},{ x : 1, y : -1, z : 0, u : im_width, v : 0},{ x : 1, y : 1, z : 0, u : im_width, v : im_height},{ x : -1, y : 1, z : 0, u : 0, v : im_height}];
@@ -342,7 +340,7 @@ Main.prototype = {
 			var v = verts[i];
 			var this1 = { x : v.x, y : v.y, z : v.z};
 			var p = this1;
-			var t = this.contextHandler.transform;
+			var t = this.temp_mat1;
 			p = { x : t.e0 * p.x + t.e4 * p.y + t.e8 * p.z + t.e12, y : t.e1 * p.x + t.e5 * p.y + t.e9 * p.z + t.e13, z : t.e2 * p.x + t.e6 * p.y + t.e10 * p.z + t.e14};
 			tverts[i] = { x : p.x, y : p.y, z : p.z, u : verts[i].u, v : verts[i].v};
 		}

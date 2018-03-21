@@ -24,7 +24,7 @@ import js.html.Element;
 
 import canvasImageTriangle.AffineMatrix;
 import canvasImageTriangle.CanvasRenderingContext25D;
-import canvasImageTriangle.ContextHandler;
+//import canvasImageTriangle.ContextHandler;
 import canvasImageTriangle.Point;
 import canvasImageTriangle.Point3D;
 import canvasImageTriangle.Vertex;
@@ -33,7 +33,7 @@ import canvasImageTriangle.PerspectiveTri;
 class Main  {
     var surface:            CanvasRenderingContext25D;
     public static var canvas: CanvasWrapper;
-    var contextHandler:     ContextHandler;
+    // var contextHandler:     ContextHandler;
     var perspectiveTri:     PerspectiveTri;
     var loader:             ImageLoader;
     var image:              ImageElement;
@@ -86,7 +86,7 @@ class Main  {
                                                        ,  new Point3D( 0.,0.,-1.)
                                                        ,  new Point3D( 0.,1., 0.) );
                                                        
-        contextHandler  = new ContextHandler( surface );
+        //contextHandler  = new ContextHandler( surface );
         
         loader = new ImageLoader( [ picture ], onLoaded );
     }
@@ -127,7 +127,7 @@ class Main  {
         // Update transform.
         AffineMatrix.multiplyAffineTo( proj_mat, view_mat, temp_mat0 );
         AffineMatrix.multiplyAffineTo( temp_mat0, object_mat, temp_mat1 );
-        contextHandler.setTransform( temp_mat1 );
+        //contextHandler.setTransform( temp_mat1 );
 
         // Draw.
         var im_width = image.width;
@@ -140,7 +140,8 @@ class Main  {
         for( i in 0...verts.length ){
             var v: Vertex = verts[ i ];
             var p: Point3D = new Point3D( v.x, v.y, v.z );
-            p = AffineMatrix.transformPoint( contextHandler.transform, p );
+            // p = AffineMatrix.transformPoint( contextHandler.transform, p );
+            p = AffineMatrix.transformPoint( temp_mat1, p );
             tverts[ i ] = { x: p.x, y: p.y, z: p.z, u: verts[ i ].u, v: verts[ i ].v } 
         }
         perspectiveTri.render( tverts, width, height );

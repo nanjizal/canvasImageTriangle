@@ -3,7 +3,7 @@ import canvasImageTriangle.CanvasRenderingContext25D;
 import canvasImageTriangle.AffineMatrix;
 import canvasImageTriangle.Vertex;
 import js.html.Image;
-
+// Does not appear to be needed for this demo
 class ContextHandler {
     var context: CanvasRenderingContext25D;
     public var transform: AffineMatrix;
