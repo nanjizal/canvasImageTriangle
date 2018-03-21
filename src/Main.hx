@@ -69,6 +69,7 @@ class Main  {
         world.spin( x, y, down );
         perspectiveTri.render( vertices(), width, height );
         world.updateMatrix();
+        renderOn            = true;
         animate();
         Browser.document.onkeydown   = keyDown;
         Browser.document.onkeyup     = keyUp;
@@ -119,7 +120,6 @@ class Main  {
         var h = height;
         x = (( e.clientX - left ) / w ) * 2 - 1;
         y = -((( e.clientY - top ) - h / 2 ) / ( w / 2 ));
-        trace( 'x ' + x + ' ,y ' + y );
     }
     function mousedown( e ){
         down = true;

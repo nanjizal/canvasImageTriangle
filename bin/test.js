@@ -553,6 +553,7 @@ Main.prototype = {
 		out1.e6 = a25 * b44 + a63 * b53 + a103 * b63;
 		out1.e10 = a25 * b83 + a63 * b93 + a103 * b103;
 		out1.e14 = a25 * b123 + a63 * b133 + a103 * b143 + a143;
+		this.renderOn = true;
 		this.animate();
 		window.document.onkeydown = $bind(this,this.keyDown);
 		window.document.onkeyup = $bind(this,this.keyUp);
@@ -1104,7 +1105,6 @@ Main.prototype = {
 		var h = this.height;
 		this.x = (e.clientX - this.left) / w * 2 - 1;
 		this.y = -((e.clientY - this.top - h / 2) / (w / 2));
-		console.log("x " + this.x + " ,y " + this.y);
 	}
 	,mousedown: function(e) {
 		this.down = true;
