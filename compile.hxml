@@ -1,0 +1,10 @@
+-js bin/test.js
+-cp src
+-lib htmlHelper;
+-debug
+-main Main
+#-D js-flatten 
+#-dce full
+--next
+-cmd echo '<!DOCTYPE html><meta charset="UTF-8"><html><body><script src="test.js"></script></body></html>' >bin/index.html
+-cmd open bin/index.html
