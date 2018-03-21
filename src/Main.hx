@@ -66,6 +66,9 @@ class Main  {
         image                        = loader.images.get( picture );
         options                      = initOpitions();
         perspectiveTri               = new PerspectiveTri( surface, image, options );
+        world.spin( x, y, down );
+        perspectiveTri.render( vertices(), width, height );
+        world.updateMatrix();
         animate();
         Browser.document.onkeydown   = keyDown;
         Browser.document.onkeyup     = keyUp;
@@ -75,11 +78,11 @@ class Main  {
     }
     inline
     function initOpitions(): Options {
-        return {    draw_backfaces: true
-                ,   whiteout_alpha: 1
-                ,   wireframe: false
-                ,   subdivide_factor: 10.0
-                ,   nonadaptive_depth: 0 
+        return {    draw_backfaces:     true
+                ,   whiteout_alpha:     1
+                ,   wireframe:          true
+                ,   subdivide_factor:   10.0
+                ,   nonadaptive_depth:  0 
             };
     }
     function animate(){
@@ -116,6 +119,7 @@ class Main  {
         var h = height;
         x = (( e.clientX - left ) / w ) * 2 - 1;
         y = -((( e.clientY - top ) - h / 2 ) / ( w / 2 ));
+        trace( 'x ' + x + ' ,y ' + y );
     }
     function mousedown( e ){
         down = true;
