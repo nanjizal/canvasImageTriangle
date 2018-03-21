@@ -141,11 +141,7 @@ class Main  {
             var v: Vertex = verts[ i ];
             var p: Point3D = new Point3D( v.x, v.y, v.z );
             p = AffineMatrix.transformPoint( contextHandler.transform, p );
-            tverts.push( 
-                { x: p.x, y: p.y, z: p.z, u: verts[ i ].u, v: verts[ i ].v } 
-                );
-            //tverts[ i ].u = verts[ i ].u;
-            //tverts[ i ].v = verts[ i ].v;
+            tverts[ i ] = { x: p.x, y: p.y, z: p.z, u: verts[ i ].u, v: verts[ i ].v } 
         }
         perspectiveTri.render( tverts, width, height );
     }

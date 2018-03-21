@@ -344,7 +344,7 @@ Main.prototype = {
 			var p = this1;
 			var t = this.contextHandler.transform;
 			p = { x : t.e0 * p.x + t.e4 * p.y + t.e8 * p.z + t.e12, y : t.e1 * p.x + t.e5 * p.y + t.e9 * p.z + t.e13, z : t.e2 * p.x + t.e6 * p.y + t.e10 * p.z + t.e14};
-			tverts.push({ x : p.x, y : p.y, z : p.z, u : verts[i].u, v : verts[i].v});
+			tverts[i] = { x : p.x, y : p.y, z : p.z, u : verts[i].u, v : verts[i].v};
 		}
 		this.perspectiveTri.render(tverts,this.width,this.height);
 	}
