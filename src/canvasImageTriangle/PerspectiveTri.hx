@@ -70,7 +70,7 @@ class PerspectiveTri {
     function unclippedSub( a: Vertex, tv0: Point3D
                                            , b: Vertex, tv1: Point3D
                                            , c: Vertex, tv2: Point3D
-                                           , ?depth_count: Int = null ){
+                                           , ?depth_count: Int = 0 ){
         var edgelen01 = Math.abs( tv0.x - tv1.x ) + Math.abs( tv0.y - tv1.y );
         var edgelen12 = Math.abs( tv1.x - tv2.x ) + Math.abs( tv1.y - tv2.y );
         var edgelen20 = Math.abs( tv2.x - tv0.x ) + Math.abs( tv2.y - tv0.y );
@@ -81,8 +81,7 @@ class PerspectiveTri {
         var subdiv = ( ( edgelen01 * zdepth01 > factor ) ? 1 : 0 ) +
                      ( ( edgelen12 * zdepth12 > factor ) ? 2 : 0 ) +
                      ( ( edgelen20 * zdepth20 > factor ) ? 4 : 0 );
-        var truthy = !( depth_count == 0 && depth_count == null );
-        if( truthy ){
+        if( depth_count != 0 ){
             depth_count--;
             if( depth_count == 0 ){
                 subdiv = 0;
@@ -154,7 +153,7 @@ class PerspectiveTri {
         return;
     }
     public inline
-    function unclipped( a: Vertex, b: Vertex, c: Vertex, ?depth_count: Int) {
+    function unclipped( a: Vertex, b: Vertex, c: Vertex, ?depth_count: Int = 0 ) {
         var tv0 = Point3D.projectPoint( a );
         var tv1 = Point3D.projectPoint( b );
         var tv2 = Point3D.projectPoint( c );
@@ -226,7 +225,7 @@ class PerspectiveTri {
     // Unconventional clipping -- recursively subdivide, and drop whole tris on
     // the wrong side of z clip plane.
     public
-    function draw( a: Vertex, b: Vertex, c: Vertex, ?depth_count: Int ){
+    function draw( a: Vertex, b: Vertex, c: Vertex, ?depth_count: Int = 0 ){
         var clip = (( a.z < MIN_Z ) ? 1 : 0) + (( b.z < MIN_Z ) ? 2 : 0) + (( c.z < MIN_Z ) ? 4 : 0);
         if( clip == 0 ){
             // No verts need clipping.
@@ -246,8 +245,7 @@ class PerspectiveTri {
         var ab = bisect( a, b );
         var bc = bisect( b, c );
         var ca = bisect( c, a );
-        var truthy = !( depth_count == 0 && depth_count == null );
-        if( truthy ) depth_count--;
+        if( depth_count != 0 ) depth_count--;
         
         if( true ){//xxxxxx  // if( 1 ) ??
             draw( a,  ab, ca, depth_count);

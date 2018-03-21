@@ -1341,6 +1341,9 @@ canvasImageTriangle_PerspectiveTri.prototype = {
 		this.surface.stroke();
 	}
 	,unclippedSub: function(a,tv0,b,tv1,c,tv2,depth_count) {
+		if(depth_count == null) {
+			depth_count = 0;
+		}
 		var edgelen01 = Math.abs(tv0.x - tv1.x) + Math.abs(tv0.y - tv1.y);
 		var edgelen12 = Math.abs(tv1.x - tv2.x) + Math.abs(tv1.y - tv2.y);
 		var edgelen20 = Math.abs(tv2.x - tv0.x) + Math.abs(tv2.y - tv0.y);
@@ -1349,8 +1352,7 @@ canvasImageTriangle_PerspectiveTri.prototype = {
 		var zdepth20 = Math.abs(c.z - a.z);
 		var factor = this.options.subdivide_factor;
 		var subdiv = (edgelen01 * zdepth01 > factor ? 1 : 0) + (edgelen12 * zdepth12 > factor ? 2 : 0) + (edgelen20 * zdepth20 > factor ? 4 : 0);
-		var truthy = !(depth_count == 0 && depth_count == null);
-		if(truthy) {
+		if(depth_count != 0) {
 			--depth_count;
 			if(depth_count == 0) {
 				subdiv = 0;
@@ -1435,6 +1437,9 @@ canvasImageTriangle_PerspectiveTri.prototype = {
 		return;
 	}
 	,unclipped: function(a,b,c,depth_count) {
+		if(depth_count == null) {
+			depth_count = 0;
+		}
 		var tv0;
 		if(a.z <= 0) {
 			var this1 = { x : 0., y : 0., z : a.z};
@@ -1504,7 +1509,7 @@ canvasImageTriangle_PerspectiveTri.prototype = {
 					var this6 = { x : c.x / c.z, y : c.y / c.z, z : c.z};
 					tv2 = this6;
 				}
-				this.unclippedSub(ab,tv0,b,tv1,c,tv2,null);
+				this.unclippedSub(ab,tv0,b,tv1,c,tv2,0);
 				var tv01;
 				if(ab.z <= 0) {
 					var this7 = { x : 0., y : 0., z : ab.z};
@@ -1529,7 +1534,7 @@ canvasImageTriangle_PerspectiveTri.prototype = {
 					var this12 = { x : ca.x / ca.z, y : ca.y / ca.z, z : ca.z};
 					tv21 = this12;
 				}
-				this.unclippedSub(ab,tv01,c,tv11,ca,tv21,null);
+				this.unclippedSub(ab,tv01,c,tv11,ca,tv21,0);
 				break;
 			case 2:
 				var f2 = (this.MIN_Z - b.z) / (a.z - b.z);
@@ -1560,7 +1565,7 @@ canvasImageTriangle_PerspectiveTri.prototype = {
 					var this18 = { x : bc.x / bc.z, y : bc.y / bc.z, z : bc.z};
 					tv22 = this18;
 				}
-				this.unclippedSub(a,tv02,ab,tv12,bc,tv22,null);
+				this.unclippedSub(a,tv02,ab,tv12,bc,tv22,0);
 				var tv03;
 				if(a.z <= 0) {
 					var this19 = { x : 0., y : 0., z : a.z};
@@ -1585,7 +1590,7 @@ canvasImageTriangle_PerspectiveTri.prototype = {
 					var this24 = { x : c.x / c.z, y : c.y / c.z, z : c.z};
 					tv23 = this24;
 				}
-				this.unclippedSub(a,tv03,bc,tv13,c,tv23,null);
+				this.unclippedSub(a,tv03,bc,tv13,c,tv23,0);
 				break;
 			case 3:
 				var f4 = (this.MIN_Z - b.z) / (c.z - b.z);
@@ -1616,7 +1621,7 @@ canvasImageTriangle_PerspectiveTri.prototype = {
 					var this30 = { x : bc.x / bc.z, y : bc.y / bc.z, z : bc.z};
 					tv24 = this30;
 				}
-				this.unclippedSub(c,tv04,ca,tv14,bc,tv24,null);
+				this.unclippedSub(c,tv04,ca,tv14,bc,tv24,0);
 				break;
 			case 4:
 				var f6 = (this.MIN_Z - c.z) / (b.z - c.z);
@@ -1647,7 +1652,7 @@ canvasImageTriangle_PerspectiveTri.prototype = {
 					var this36 = { x : bc.x / bc.z, y : bc.y / bc.z, z : bc.z};
 					tv25 = this36;
 				}
-				this.unclippedSub(a,tv05,b,tv15,bc,tv25,null);
+				this.unclippedSub(a,tv05,b,tv15,bc,tv25,0);
 				var tv06;
 				if(a.z <= 0) {
 					var this37 = { x : 0., y : 0., z : a.z};
@@ -1672,7 +1677,7 @@ canvasImageTriangle_PerspectiveTri.prototype = {
 					var this42 = { x : ca.x / ca.z, y : ca.y / ca.z, z : ca.z};
 					tv26 = this42;
 				}
-				this.unclippedSub(a,tv06,bc,tv16,ca,tv26,null);
+				this.unclippedSub(a,tv06,bc,tv16,ca,tv26,0);
 				break;
 			case 5:
 				var f8 = (this.MIN_Z - a.z) / (b.z - a.z);
@@ -1703,7 +1708,7 @@ canvasImageTriangle_PerspectiveTri.prototype = {
 					var this48 = { x : ab.x / ab.z, y : ab.y / ab.z, z : ab.z};
 					tv27 = this48;
 				}
-				this.unclippedSub(b,tv07,bc,tv17,ab,tv27,null);
+				this.unclippedSub(b,tv07,bc,tv17,ab,tv27,0);
 				break;
 			case 6:
 				var f10 = (this.MIN_Z - a.z) / (b.z - a.z);
@@ -1734,7 +1739,7 @@ canvasImageTriangle_PerspectiveTri.prototype = {
 					var this54 = { x : ca.x / ca.z, y : ca.y / ca.z, z : ca.z};
 					tv28 = this54;
 				}
-				this.unclippedSub(a,tv08,ab,tv18,ca,tv28,null);
+				this.unclippedSub(a,tv08,ab,tv18,ca,tv28,0);
 				break;
 			}
 			return;
@@ -1763,9 +1768,12 @@ canvasImageTriangle_PerspectiveTri.prototype = {
 			var this60 = { x : c.x / c.z, y : c.y / c.z, z : c.z};
 			tv29 = this60;
 		}
-		this.unclippedSub(a,tv09,b,tv19,c,tv29,null);
+		this.unclippedSub(a,tv09,b,tv19,c,tv29,0);
 	}
 	,draw: function(a,b,c,depth_count) {
+		if(depth_count == null) {
+			depth_count = 0;
+		}
 		var clip = (a.z < this.MIN_Z ? 1 : 0) + (b.z < this.MIN_Z ? 2 : 0) + (c.z < this.MIN_Z ? 4 : 0);
 		if(clip == 0) {
 			var tv0;
@@ -1806,8 +1814,7 @@ canvasImageTriangle_PerspectiveTri.prototype = {
 		var p = { x : (a.x + b.x) / 2, y : (a.y + b.y) / 2, z : (a.z + b.z) / 2, u : (a.u + b.u) / 2, v : (a.v + b.v) / 2};
 		var p1 = { x : (b.x + c.x) / 2, y : (b.y + c.y) / 2, z : (b.z + c.z) / 2, u : (b.u + c.u) / 2, v : (b.v + c.v) / 2};
 		var p2 = { x : (c.x + a.x) / 2, y : (c.y + a.y) / 2, z : (c.z + a.z) / 2, u : (c.u + a.u) / 2, v : (c.v + a.v) / 2};
-		var truthy = !(depth_count == 0 && depth_count == null);
-		if(truthy) {
+		if(depth_count != 0) {
 			--depth_count;
 		}
 		this.draw(a,p,p2,depth_count);
