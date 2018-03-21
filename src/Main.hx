@@ -28,17 +28,13 @@ import canvasImageTriangle.ContextHandler;
 import canvasImageTriangle.Point;
 import canvasImageTriangle.Point3D;
 import canvasImageTriangle.Vertex;
-
-typedef Options = {     draw_backfaces:    Bool
-                    ,   whiteout_alpha:    Float
-                    ,   wireframe:         Bool
-                    ,   subdivide_factor:  Float
-                    ,   nonadaptive_depth: Int }
+import canvasImageTriangle.PerspectiveTri;
 
 class Main  {
     var surface:            CanvasRenderingContext25D;
     public static var canvas: CanvasWrapper;
     var contextHandler:     ContextHandler;
+    var perspectiveTri:     PerspectiveTri;
     var loader:             ImageLoader;
     var image:              ImageElement;
     var picture:            String = 'nyt_nov5.jpg';
@@ -63,8 +59,6 @@ class Main  {
     var zoom_in_pressed     = false;
     var zoom_out_pressed    = false;
     var last_spin_time      = 0.;
-    var draw_wireframe      = false;
-    var MIN_Z               = 0.05;
     var width               = 1024.;
     var height              = 768.;
     static function main( ){
@@ -91,12 +85,16 @@ class Main  {
         camera_mat  = AffineMatrix.makeOrientationAffine( new Point3D( 0.,0., 0.2 + target_distance )
                                                        ,  new Point3D( 0.,0.,-1.)
                                                        ,  new Point3D( 0.,1., 0.) );
-        contextHandler = new ContextHandler( surface );
+                                                       
+        contextHandler  = new ContextHandler( surface );
+        
         loader = new ImageLoader( [ picture ], onLoaded );
     }
+    public
     function onLoaded(){ //trace( 'loaded assests');
         var images: Hash<ImageElement>  = loader.images;
         image                           = images.get( picture );
+        perspectiveTri = new PerspectiveTri( surface, image, options );
         animate();
         Browser.document.onkeydown = keyDown;
         Browser.document.onkeyup   = keyUp;
@@ -116,242 +114,6 @@ class Main  {
     // do I need this?
     function getTime() {
       return Date.now().getTime();
-    }
-    // Return the point between two points, also bisect the texture coords.
-    function bisect( p: Vertex, q: Vertex ): Vertex {
-        var p = {   x: ( p.x + q.x ) / 2,
-                    y: ( p.y + q.y ) / 2,
-                    z: ( p.z + q.z ) / 2,
-                    u: ( p.u + q.u ) / 2,
-                    v: ( p.v + q.v ) / 2 };
-        return p;
-    }
-    
-    // for debugging
-    function drawPerspectiveTriUnclippedSubX( a: Vertex, tv0: Point3D
-                                            , b: Vertex, tv1: Point3D
-                                            , c: Vertex, tv2: Point3D ) {
-        surface.beginPath();
-        surface.moveTo( tv0.x, tv0.y );
-        surface.lineTo( tv1.x, tv1.y );
-        surface.lineTo( tv2.x, tv2.y );
-        surface.lineTo( tv0.x, tv0.y );
-        surface.stroke();
-    }
-    function drawPerspectiveTriUnclippedSub( a: Vertex, tv0: Point3D
-                                           , b: Vertex, tv1: Point3D
-                                           , c: Vertex, tv2: Point3D
-                                           , ?depth_count: Int = null ){
-        var edgelen01 = Math.abs( tv0.x - tv1.x ) + Math.abs( tv0.y - tv1.y );
-        var edgelen12 = Math.abs( tv1.x - tv2.x ) + Math.abs( tv1.y - tv2.y );
-        var edgelen20 = Math.abs( tv2.x - tv0.x ) + Math.abs( tv2.y - tv0.y );
-        var zdepth01  = Math.abs( a.z - b.z );
-        var zdepth12  = Math.abs( b.z - c.z );
-        var zdepth20  = Math.abs( c.z - a.z );
-        var factor = options.subdivide_factor;
-        var subdiv = ( ( edgelen01 * zdepth01 > factor ) ? 1 : 0 ) +
-                     ( ( edgelen12 * zdepth12 > factor ) ? 2 : 0 ) +
-                     ( ( edgelen20 * zdepth20 > factor ) ? 4 : 0 );
-
-        if( depth_count != null ){
-            depth_count--;
-            if( depth_count == null ){
-                subdiv = 0;
-            } else {
-                subdiv = 7;
-            }
-        }
-
-        if (subdiv == 0) {
-            if (draw_wireframe) {
-                  surface.beginPath();
-                  surface.moveTo( tv0.x, tv0.y );
-                  surface.lineTo( tv1.x, tv1.y );
-                  surface.lineTo( tv2.x, tv2.y );
-                  surface.lineTo( tv0.x, tv0.y );
-                  surface.stroke();
-            } else {
-                  surface.drawTriangle( image,
-                                        tv0.x, tv0.y,
-                                        tv1.x, tv1.y,
-                                        tv2.x, tv2.y,
-                                        a.u, a.v,
-                                        b.u, b.v,
-                                        c.u, c.v);
-            }
-            return;
-        }
-
-        // Need to subdivide.  This code could be more optimal, but I'm
-        // trying to keep it reasonably short.
-        var v01  = bisect( a, b );
-        var tv01 = Point3D.projectPoint( v01 );
-        var v12  = bisect( b, c );
-        var tv12 = Point3D.projectPoint( v12 );
-        var v20  = bisect( c, a );
-        var tv20 = Point3D.projectPoint( v20 );
-
-        switch( subdiv ){
-            case 1:
-                // split along v01-v2
-                drawPerspectiveTriUnclippedSub( a, tv0, v01, tv01, c, tv2);
-                drawPerspectiveTriUnclippedSub( v01, tv01, b, tv1, c, tv2);
-            case 2:
-                // split along v0-v12
-                drawPerspectiveTriUnclippedSub( a, tv0, b, tv1, v12, tv12);
-                drawPerspectiveTriUnclippedSub( a, tv0, v12, tv12, c, tv2);
-            case 3:
-                // split along v01-v12
-                drawPerspectiveTriUnclippedSub( a, tv0, v01, tv01, v12, tv12);
-                drawPerspectiveTriUnclippedSub( a, tv0, v12, tv12, c, tv2);
-                drawPerspectiveTriUnclippedSub( v01, tv01, b, tv1, v12, tv12);
-            case 4:
-                // split along v1-v20
-                drawPerspectiveTriUnclippedSub( a, tv0, b, tv1, v20, tv20 );
-                drawPerspectiveTriUnclippedSub( b, tv1, c, tv2, v20, tv20 );
-            case 5:
-                // split along v01-v20
-                drawPerspectiveTriUnclippedSub( a, tv0, v01, tv01, v20, tv20);
-                drawPerspectiveTriUnclippedSub( b, tv1, c, tv2, v01, tv01);
-                drawPerspectiveTriUnclippedSub( c, tv2, v20, tv20, v01, tv01);
-            case 6:
-                // split along v12-v20
-                drawPerspectiveTriUnclippedSub( a, tv0, b, tv1, v20, tv20);
-                drawPerspectiveTriUnclippedSub( b, tv1, v12, tv12, v20, tv20);
-                drawPerspectiveTriUnclippedSub( v12, tv12, c, tv2, v20, tv20);
-            default: // 7
-                drawPerspectiveTriUnclippedSub( a, tv0, v01, tv01, v20, tv20, depth_count);
-                drawPerspectiveTriUnclippedSub( b, tv1, v12, tv12, v01, tv01, depth_count);
-                drawPerspectiveTriUnclippedSub( c, tv2, v20, tv20, v12, tv12, depth_count);
-                drawPerspectiveTriUnclippedSub( v01, tv01, v12, tv12, v20, tv20, depth_count);
-        }
-        return;
-    }
-    function drawPerspectiveTriUnclipped( a: Vertex, b: Vertex, c: Vertex, ?depth_count: Int) {
-        var tv0 = Point3D.projectPoint( a );
-        var tv1 = Point3D.projectPoint( b );
-        var tv2 = Point3D.projectPoint( c );
-        drawPerspectiveTriUnclippedSub( a, tv0, b, tv1, c, tv2, depth_count );
-    }
-    // Given an edge that crosses the z==MIN_Z plane, return the
-    // intersection of the edge with z==MIN_Z.
-    function clip_line( p: Vertex, q: Vertex ): Vertex {
-        var f = ( MIN_Z - p.z ) / ( q.z - p.z );
-        return {    x: p.x + ( q.x - p.x ) * f
-                ,   y: p.y + ( q.y - p.y ) * f
-                ,   z: p.z + ( q.z - p.z ) * f
-                ,   u: p.u + ( q.u - p.u ) * f
-                ,   v: p.v + ( q.v - p.v ) * f
-        };
-    }
-    // Draw a perspective-corrected textured triangle, subdividing as
-    // necessary for clipping and texture mapping.
-    function drawPerspectiveTriConventionalClipping( a: Vertex, b: Vertex, c: Vertex ) {
-        var clip = (( a.z < MIN_Z ) ? 1 : 0) + (( b.z < MIN_Z ) ? 2 : 0) + (( c.z < MIN_Z ) ? 4 : 0);
-        if (clip == 7) {
-        // All verts are behind the near plane; don't draw.
-            return;
-        }
-
-        if( clip != 0 ){
-            var ab: Vertex;
-            var bc: Vertex;
-            var ca: Vertex;
-            switch (clip) {
-                case 1:
-                    ab = clip_line( a, b );
-                    ca = clip_line( a, c );
-                    drawPerspectiveTriUnclipped( ab, b, c );
-                    drawPerspectiveTriUnclipped( ab, c, ca );
-                case 2:
-                    ab = clip_line( b, a );
-                    bc = clip_line( b, c );
-                    drawPerspectiveTriUnclipped( a, ab, bc );
-                    drawPerspectiveTriUnclipped( a, bc, c );
-                case 3:
-                    bc = clip_line( b, c );
-                    ca = clip_line( a, c );
-                    drawPerspectiveTriUnclipped( c, ca, bc );
-                case 4:
-                    bc = clip_line( c, b );
-                    ca = clip_line( c, a );
-                    drawPerspectiveTriUnclipped( a, b, bc );
-                    drawPerspectiveTriUnclipped( a, bc, ca );
-                case 5:
-                    ab = clip_line( a, b );
-                    bc = clip_line( c, b );
-                    drawPerspectiveTriUnclipped( b, bc, ab );
-                case 6:
-                    ab = clip_line( a, b );
-                    ca = clip_line( a, c );
-                    drawPerspectiveTriUnclipped( a, ab, ca );
-            }
-            return;
-        }
-        // No verts need clipping.
-        drawPerspectiveTriUnclipped( a, b, c );
-    }
-    // Draw a perspective-corrected textured triangle, subdividing as
-    // necessary for clipping and texture mapping.
-    //
-    // Unconventional clipping -- recursively subdivide, and drop whole tris on
-    // the wrong side of z clip plane.
-    function drawPerspectiveTri( a: Vertex, b: Vertex, c: Vertex, ?depth_count: Int ){
-        var clip = (( a.z < MIN_Z ) ? 1 : 0) + (( b.z < MIN_Z ) ? 2 : 0) + (( c.z < MIN_Z ) ? 4 : 0);
-        if( clip == 0 ){
-            // No verts need clipping.
-            drawPerspectiveTriUnclipped( a, b, c, depth_count );
-            return;
-        }
-        if( clip == 7 ){
-            // All verts are behind the near plane; don't draw.
-            return;
-        }
-        var min_z2 = MIN_Z * 1.1;
-        var clip2 = (( a.z < min_z2 ) ? 1 : 0) + (( b.z < min_z2 ) ? 2 : 0) + (( c.z < min_z2 ) ? 4 : 0);
-        if (clip2 == 7) {
-            // All verts are behind the guard band, don't recurse.
-            return;
-        }
-        var ab = bisect( a, b );
-        var bc = bisect( b, c );
-        var ca = bisect( c, a );
-        if( depth_count != -1 ) depth_count--;
-        
-        if( true ){//xxxxxx  // if( 1 ) ??
-            drawPerspectiveTri( a,  ab, ca, depth_count);
-            drawPerspectiveTri( ab,  b, bc, depth_count);
-            drawPerspectiveTri( bc,  c, ca, depth_count);
-            drawPerspectiveTri( ab, bc, ca, depth_count);
-            return;
-         }
-         
-        switch( clip ){
-            case 1:
-                drawPerspectiveTri( ab, b, c );
-                drawPerspectiveTri( ab, c, ca );
-                drawPerspectiveTri( a, ab, ca );
-            case 2:
-                drawPerspectiveTri( a, ab, bc );
-                drawPerspectiveTri( a, bc, c  );
-                drawPerspectiveTri( b, bc, ab );
-            case 3:
-                drawPerspectiveTri( c, ca, bc );
-                drawPerspectiveTri( a, b,  bc );
-                drawPerspectiveTri( a, bc, ca );
-            case 4:
-                drawPerspectiveTri( a,  b, bc );
-                drawPerspectiveTri( a, bc, ca );
-                drawPerspectiveTri( bc, c, ca );
-            case 5:
-                drawPerspectiveTri( b, bc, ab );
-                drawPerspectiveTri( a, ab, bc );
-                drawPerspectiveTri( a, bc, c  );
-            case 6:
-                drawPerspectiveTri( a, ab, ca );
-                drawPerspectiveTri( ab, b, c  );
-                drawPerspectiveTri( ab, c, ca );
-        }
     }
     function draw(){
         // Clear with white.
@@ -385,18 +147,7 @@ class Main  {
             //tverts[ i ].u = verts[ i ].u;
             //tverts[ i ].v = verts[ i ].v;
         }
-        var depth = options.nonadaptive_depth;
-        drawPerspectiveTri( tverts[ 0 ], tverts[ 1 ], tverts[ 2 ], depth );
-        drawPerspectiveTri( tverts[ 0 ], tverts[ 2 ], tverts[ 3 ], depth );
-        if( options.wireframe ){
-            surface.globalAlpha = 0.3;
-            surface.fillRect( 0, 0, width, height );
-            draw_wireframe = true;
-            surface.globalAlpha = 1;
-            drawPerspectiveTri( tverts[ 0 ], tverts[ 1 ], tverts[ 2 ], depth );
-            drawPerspectiveTri( tverts[ 0 ], tverts[ 2 ], tverts[ 3 ], depth );
-            draw_wireframe = false;
-        }
+        perspectiveTri.render( tverts, width, height );
     }
     function rotateObject( scaled_axis: Point3D ) {
         var angle = Math.asin( Math.sqrt( Point3D.dotProduct( scaled_axis, scaled_axis )));
