@@ -1352,7 +1352,7 @@ canvasImageTriangle_PerspectiveTri.prototype = {
 		var truthy = !(depth_count == 0 && depth_count == null);
 		if(truthy) {
 			--depth_count;
-			if(depth_count == null) {
+			if(depth_count == 0) {
 				subdiv = 0;
 			} else {
 				subdiv = 7;
