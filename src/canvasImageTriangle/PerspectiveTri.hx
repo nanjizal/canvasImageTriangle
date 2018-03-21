@@ -27,6 +27,11 @@ class PerspectiveTri {
     }
     public
     function render( tverts: Array<Vertex>, width: Float, height: Float ){
+        // Clear with white.
+        surface.globalAlpha = options.whiteout_alpha;
+        surface.fillStyle = '#FFFFFF';
+        surface.fillRect( 0, 0, width, height );
+        surface.globalAlpha = 1;
         var depth = options.nonadaptive_depth;
         draw( tverts[ 0 ], tverts[ 1 ], tverts[ 2 ], depth );
         draw( tverts[ 0 ], tverts[ 2 ], tverts[ 3 ], depth );

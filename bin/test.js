@@ -15,142 +15,14 @@ HxOverrides.cca = function(s,index) {
 	}
 	return x;
 };
-var Main = function(surface_) {
-	this.allowSpin = false;
+var Main = function() {
 	this.height = 768.;
 	this.width = 1024.;
-	this.last_spin_time = 0.;
-	this.zoom_out_pressed = false;
-	this.zoom_in_pressed = false;
-	this.target_distance = 2.;
-	this.horizontal_fov_radians = Math.PI / 2;
-	this.mouse_is_down = false;
-	this.mouse_grab_point = null;
-	this.mouse_y = 0.;
-	this.mouse_x = 0.;
-	this.timer_id = null;
-	this.proj_mat = null;
-	this.camera_mat = null;
-	this.object_mat = null;
-	this.temp_mat2 = null;
-	this.temp_mat1 = null;
-	this.temp_mat0 = null;
-	this.c3d = null;
-	this.canvas_elem = null;
-	this.dl = null;
+	this.down = false;
+	this.y = 0.;
+	this.x = 0.;
+	this.renderOn = false;
 	this.picture = "nyt_nov5.jpg";
-	this.surface = surface_;
-	var this1 = { x : 2.6, y : 2.6, z : 0};
-	this.object_omega = this1;
-	this.options = { draw_backfaces : true, whiteout_alpha : 1, wireframe : false, subdivide_factor : 10.0, nonadaptive_depth : 0};
-	var a = new canvasImageTriangle_AffineMatrix();
-	a.e0 = 1;
-	a.e4 = 0;
-	a.e8 = 0;
-	a.e12 = 0;
-	a.e1 = 0;
-	a.e5 = 1;
-	a.e9 = 0;
-	a.e13 = 0;
-	a.e2 = 0;
-	a.e6 = 0;
-	a.e10 = 1;
-	a.e14 = 0;
-	this.temp_mat0 = a;
-	var a1 = new canvasImageTriangle_AffineMatrix();
-	a1.e0 = 1;
-	a1.e4 = 0;
-	a1.e8 = 0;
-	a1.e12 = 0;
-	a1.e1 = 0;
-	a1.e5 = 1;
-	a1.e9 = 0;
-	a1.e13 = 0;
-	a1.e2 = 0;
-	a1.e6 = 0;
-	a1.e10 = 1;
-	a1.e14 = 0;
-	this.temp_mat1 = a1;
-	var a2 = new canvasImageTriangle_AffineMatrix();
-	a2.e0 = 1;
-	a2.e4 = 0;
-	a2.e8 = 0;
-	a2.e12 = 0;
-	a2.e1 = 0;
-	a2.e5 = 1;
-	a2.e9 = 0;
-	a2.e13 = 0;
-	a2.e2 = 0;
-	a2.e6 = 0;
-	a2.e10 = 1;
-	a2.e14 = 0;
-	this.temp_mat2 = a2;
-	var half_width = this.width / 2;
-	var half_height = this.height / 2;
-	var tan_half = Math.tan(this.horizontal_fov_radians / 2);
-	var scale = half_width / tan_half;
-	var a3 = new canvasImageTriangle_AffineMatrix();
-	a3.e0 = scale;
-	a3.e4 = 0;
-	a3.e8 = -scale;
-	a3.e12 = 0;
-	a3.e1 = 0;
-	a3.e5 = -scale;
-	a3.e9 = -half_height / tan_half;
-	a3.e13 = 0;
-	a3.e2 = 0;
-	a3.e6 = 0;
-	a3.e10 = -1;
-	a3.e14 = 0;
-	this.proj_mat = a3;
-	var this2 = { x : 0., y : 0., z : 0.};
-	var pos = this2;
-	var this3 = { x : 1., y : 0., z : 0.};
-	var dir = this3;
-	var this4 = { x : 0., y : 1., z : 0.};
-	var up = this4;
-	var this5 = { x : dir.y * up.z - dir.z * up.y, y : dir.z * up.x - dir.x * up.z, z : dir.x * up.y - dir.y * up.x};
-	var right = this5;
-	var a4 = new canvasImageTriangle_AffineMatrix();
-	a4.e0 = dir.x;
-	a4.e4 = up.x;
-	a4.e8 = right.x;
-	a4.e12 = pos.x;
-	a4.e1 = dir.y;
-	a4.e5 = up.y;
-	a4.e9 = right.y;
-	a4.e13 = pos.y;
-	a4.e2 = dir.z;
-	a4.e6 = up.z;
-	a4.e10 = right.z;
-	a4.e14 = pos.z;
-	this.object_mat = a4;
-	var this6 = { x : 0., y : 0., z : 0.2 + this.target_distance};
-	var pos1 = this6;
-	var this7 = { x : 0., y : 0., z : -1.};
-	var dir1 = this7;
-	var this8 = { x : 0., y : 1., z : 0.};
-	var up1 = this8;
-	var this9 = { x : dir1.y * up1.z - dir1.z * up1.y, y : dir1.z * up1.x - dir1.x * up1.z, z : dir1.x * up1.y - dir1.y * up1.x};
-	var right1 = this9;
-	var a5 = new canvasImageTriangle_AffineMatrix();
-	a5.e0 = dir1.x;
-	a5.e4 = up1.x;
-	a5.e8 = right1.x;
-	a5.e12 = pos1.x;
-	a5.e1 = dir1.y;
-	a5.e5 = up1.y;
-	a5.e9 = right1.y;
-	a5.e13 = pos1.y;
-	a5.e2 = dir1.z;
-	a5.e6 = up1.z;
-	a5.e10 = right1.z;
-	a5.e14 = pos1.z;
-	this.camera_mat = a5;
-	this.loader = new htmlHelper_tools_ImageLoader([this.picture],$bind(this,this.onLoaded));
-};
-Main.__name__ = true;
-Main.main = function() {
 	var this1;
 	var canvas = window.document.createElement("canvas");
 	var dom = canvas;
@@ -161,18 +33,29 @@ Main.main = function() {
 	style.top = "0px";
 	style.position = "absolute";
 	this1 = canvas;
-	Main.canvas = this1;
-	Main.canvas.width = 1024;
-	Main.canvas.height = 768;
-	window.document.body.appendChild(Main.canvas);
-	var this2 = Main.canvas.getContext("2d",null);
-	new Main(this2);
+	this.canvas = this1;
+	this.element = js_Boot.__cast(this.canvas , HTMLElement);
+	this.canvas.width = this.width | 0;
+	this.canvas.height = this.height | 0;
+	this.left = this.element.offsetLeft;
+	this.top = this.element.offsetTop;
+	window.document.body.appendChild(this.canvas);
+	var this2 = this.canvas.getContext("2d",null);
+	this.surface = this2;
+	this.world = new canvasImageTriangle_World(this.width,this.height);
+	this.loader = new htmlHelper_tools_ImageLoader([this.picture],$bind(this,this.onLoaded));
+};
+Main.__name__ = true;
+Main.main = function() {
+	new Main();
 };
 Main.prototype = {
 	onLoaded: function() {
-		var images = this.loader.images;
+		console.log("loaded image");
+		var _this = this.loader.images;
 		var key = this.picture;
-		this.image = __map_reserved[key] != null ? images.getReserved(key) : images.h[key];
+		this.image = __map_reserved[key] != null ? _this.getReserved(key) : _this.h[key];
+		this.options = { draw_backfaces : true, whiteout_alpha : 1, wireframe : false, subdivide_factor : 10.0, nonadaptive_depth : 0};
 		this.perspectiveTri = new canvasImageTriangle_PerspectiveTri(this.surface,this.image,this.options);
 		this.animate();
 		window.document.onkeydown = $bind(this,this.keyDown);
@@ -180,6 +63,9 @@ Main.prototype = {
 		window.document.onmousemove = $bind(this,this.mousemove);
 		window.document.onmousedown = $bind(this,this.mousedown);
 		window.document.onmouseup = $bind(this,this.mouseup);
+	}
+	,initOpitions: function() {
+		return { draw_backfaces : true, whiteout_alpha : 1, wireframe : false, subdivide_factor : 10.0, nonadaptive_depth : 0};
 	}
 	,animate: function() {
 		htmlHelper_tools_AnimateTimer.onFrame = $bind(this,this.render);
@@ -192,146 +78,512 @@ Main.prototype = {
 		}
 	}
 	,render: function(count) {
-		if(this.allowSpin) {
-			this.spin();
-		}
-	}
-	,getTime: function() {
-		return new Date().getTime();
-	}
-	,draw: function() {
 		var trans_prime_z;
 		var trans_prime_y;
 		var trans_prime_x;
 		var p_z;
 		var p_y;
 		var p_x;
-		this.surface.globalAlpha = this.options.whiteout_alpha;
-		this.surface.fillStyle = "#FFFFFF";
-		this.surface.fillRect(0,0,this.width,this.height);
-		this.surface.globalAlpha = 1;
-		var orient = this.camera_mat;
-		var e8_ = -orient.e0;
-		var e9_ = -orient.e1;
-		var e10_ = -orient.e2;
-		var a = new canvasImageTriangle_AffineMatrix();
-		a.e0 = orient.e8;
-		a.e4 = orient.e4;
-		a.e8 = e8_;
-		a.e12 = orient.e12;
-		a.e1 = orient.e9;
-		a.e5 = orient.e5;
-		a.e9 = e9_;
-		a.e13 = orient.e13;
-		a.e2 = orient.e10;
-		a.e6 = orient.e6;
-		a.e10 = e10_;
-		a.e14 = orient.e14;
-		var e1_ = a.e4;
-		var e2_ = a.e8;
-		var e6_ = a.e9;
-		var a1 = new canvasImageTriangle_AffineMatrix();
-		a1.e0 = a.e0;
-		a1.e4 = a.e1;
-		a1.e8 = a.e2;
-		a1.e12 = 0;
-		a1.e1 = e1_;
-		a1.e5 = a.e5;
-		a1.e9 = a.e6;
-		a1.e13 = 0;
-		a1.e2 = e2_;
-		a1.e6 = e6_;
-		a1.e10 = a.e10;
-		a1.e14 = 0;
-		p_x = a.e12;
-		p_y = a.e13;
-		p_z = a.e14;
-		trans_prime_x = a1.e0 * p_x + a1.e4 * p_y + a1.e8 * p_z + a1.e12;
-		trans_prime_y = a1.e1 * p_x + a1.e5 * p_y + a1.e9 * p_z + a1.e13;
-		trans_prime_z = a1.e2 * p_x + a1.e6 * p_y + a1.e10 * p_z + a1.e14;
-		a1.e12 = -trans_prime_x;
-		a1.e13 = -trans_prime_y;
-		a1.e14 = -trans_prime_z;
-		var a2 = this.proj_mat;
-		var out = this.temp_mat0;
-		var a0 = a2.e0;
-		var a11 = a2.e1;
-		var a21 = a2.e2;
-		var a4 = a2.e4;
-		var a5 = a2.e5;
-		var a6 = a2.e6;
-		var a8 = a2.e8;
-		var a9 = a2.e9;
-		var a10 = a2.e10;
-		var a12 = a2.e12;
-		var a13 = a2.e13;
-		var a14 = a2.e14;
-		var b0 = a1.e0;
-		var b1 = a1.e1;
-		var b2 = a1.e2;
-		var b4 = a1.e4;
-		var b5 = a1.e5;
-		var b6 = a1.e6;
-		var b8 = a1.e8;
-		var b9 = a1.e9;
-		var b10 = a1.e10;
-		var b12 = a1.e12;
-		var b13 = a1.e13;
-		var b14 = a1.e14;
-		out.e0 = a0 * b0 + a4 * b1 + a8 * b2;
-		out.e4 = a0 * b4 + a4 * b5 + a8 * b6;
-		out.e8 = a0 * b8 + a4 * b9 + a8 * b10;
-		out.e12 = a0 * b12 + a4 * b13 + a8 * b14 + a12;
-		out.e1 = a11 * b0 + a5 * b1 + a9 * b2;
-		out.e5 = a11 * b4 + a5 * b5 + a9 * b6;
-		out.e9 = a11 * b8 + a5 * b9 + a9 * b10;
-		out.e13 = a11 * b12 + a5 * b13 + a9 * b14 + a13;
-		out.e2 = a21 * b0 + a6 * b1 + a10 * b2;
-		out.e6 = a21 * b4 + a6 * b5 + a10 * b6;
-		out.e10 = a21 * b8 + a6 * b9 + a10 * b10;
-		out.e14 = a21 * b12 + a6 * b13 + a10 * b14 + a14;
-		var a3 = this.temp_mat0;
-		var b = this.object_mat;
-		var out1 = this.temp_mat1;
-		var a01 = a3.e0;
-		var a15 = a3.e1;
-		var a22 = a3.e2;
-		var a41 = a3.e4;
-		var a51 = a3.e5;
-		var a61 = a3.e6;
-		var a81 = a3.e8;
-		var a91 = a3.e9;
-		var a101 = a3.e10;
-		var a121 = a3.e12;
-		var a131 = a3.e13;
-		var a141 = a3.e14;
-		var b01 = b.e0;
-		var b11 = b.e1;
-		var b21 = b.e2;
-		var b41 = b.e4;
-		var b51 = b.e5;
-		var b61 = b.e6;
-		var b81 = b.e8;
-		var b91 = b.e9;
-		var b101 = b.e10;
-		var b121 = b.e12;
-		var b131 = b.e13;
-		var b141 = b.e14;
-		out1.e0 = a01 * b01 + a41 * b11 + a81 * b21;
-		out1.e4 = a01 * b41 + a41 * b51 + a81 * b61;
-		out1.e8 = a01 * b81 + a41 * b91 + a81 * b101;
-		out1.e12 = a01 * b121 + a41 * b131 + a81 * b141 + a121;
-		out1.e1 = a15 * b01 + a51 * b11 + a91 * b21;
-		out1.e5 = a15 * b41 + a51 * b51 + a91 * b61;
-		out1.e9 = a15 * b81 + a51 * b91 + a91 * b101;
-		out1.e13 = a15 * b121 + a51 * b131 + a91 * b141 + a131;
-		out1.e2 = a22 * b01 + a61 * b11 + a101 * b21;
-		out1.e6 = a22 * b41 + a61 * b51 + a101 * b61;
-		out1.e10 = a22 * b81 + a61 * b91 + a101 * b101;
-		out1.e14 = a22 * b121 + a61 * b131 + a101 * b141 + a141;
-		var im_width = this.image.width;
-		var im_height = this.image.height;
-		var verts = [{ x : -1, y : -1, z : 0, u : 0, v : 0},{ x : 1, y : -1, z : 0, u : im_width, v : 0},{ x : 1, y : 1, z : 0, u : im_width, v : im_height},{ x : -1, y : 1, z : 0, u : 0, v : im_height}];
+		var origGrab_z;
+		var origGrab_y;
+		var origGrab_x;
+		if(this.renderOn) {
+			var _this = this.world;
+			var x = this.x;
+			var y = this.y;
+			var mouseDown = this.down;
+			var now = new Date().getTime() | 0;
+			_this.dt = now - _this.lastTime;
+			_this.lastTime = now;
+			if(_this.dt > 100) {
+				_this.dt = 100;
+			}
+			if(_this.dt < 1) {
+				_this.dt = 1;
+			}
+			if(_this.bigger) {
+				_this.distance -= 2.0 * _this.dt / 1000;
+			}
+			if(_this.smaller) {
+				_this.distance += 2.0 * _this.dt / 1000;
+			}
+			if(_this.distance < 0) {
+				_this.distance = 0.;
+			}
+			_this.camera.e14 = 0.2 + _this.distance;
+			if(mouseDown) {
+				var this1 = { x : _this.camera.e12, y : _this.camera.e13, z : _this.camera.e14 + 1.};
+				var p = this1;
+				var this2 = { x : _this.camera.e0, y : _this.camera.e1, z : _this.camera.e2};
+				var r = this2;
+				var this3 = { x : _this.camera.e4, y : _this.camera.e5, z : _this.camera.e6};
+				var up = this3;
+				var this4 = { x : _this.camera.e8, y : _this.camera.e9, z : _this.camera.e10};
+				var right = this4;
+				var tan_half = Math.tan(_this.hFov / 2);
+				var s = x * tan_half;
+				var this5 = { x : right.x * s, y : right.y * s, z : right.z * s};
+				var b = this5;
+				var this6 = { x : r.x + b.x, y : r.y + b.y, z : r.z + b.z};
+				r = this6;
+				var s1 = y * tan_half;
+				var this7 = { x : up.x * s1, y : up.y * s1, z : up.z * s1};
+				var b1 = this7;
+				var this8 = { x : r.x + b1.x, y : r.y + b1.y, z : r.z + b1.z};
+				r = this8;
+				var l2 = r.x * r.x + r.y * r.y + r.z * r.z;
+				if(l2 <= 0) {
+					var this9 = { x : 1., y : 0., z : 0.};
+					r = this9;
+				} else {
+					var scale = 1 / Math.sqrt(l2);
+					var this10 = { x : r.x * scale, y : r.y * scale, z : r.z * scale};
+					r = this10;
+				}
+				var grabPoint;
+				if(p.x * p.x + p.y * p.y + p.z * p.z < 1) {
+					grabPoint = null;
+				} else {
+					var ray = -(p.x * r.x + p.y * r.y + p.z * r.z);
+					if(ray < 0) {
+						grabPoint = null;
+					} else {
+						var this11 = { x : r.x * ray, y : r.y * ray, z : r.z * ray};
+						var b2 = this11;
+						var this12 = { x : p.x + b2.x, y : p.y + b2.y, z : p.z + b2.z};
+						var perp = this12;
+						if(perp.x * perp.x + perp.y * perp.y + perp.z * perp.z >= 0.999999) {
+							var l21 = perp.x * perp.x + perp.y * perp.y + perp.z * perp.z;
+							if(l21 <= 0) {
+								var this13 = { x : 1., y : 0., z : 0.};
+								grabPoint = this13;
+							} else {
+								var scale1 = 1 / Math.sqrt(l21);
+								var this14 = { x : perp.x * scale1, y : perp.y * scale1, z : perp.z * scale1};
+								grabPoint = this14;
+							}
+						} else {
+							var e = Math.sqrt(1 - (perp.x * perp.x + perp.y * perp.y + perp.z * perp.z));
+							var s2 = ray - e;
+							var this15 = { x : r.x * s2, y : r.y * s2, z : r.z * s2};
+							var b3 = this15;
+							var this16 = { x : p.x + b3.x, y : p.y + b3.y, z : p.z + b3.z};
+							var hit = this16;
+							var l22 = hit.x * hit.x + hit.y * hit.y + hit.z * hit.z;
+							if(l22 <= 0) {
+								var this17 = { x : 1., y : 0., z : 0.};
+								grabPoint = this17;
+							} else {
+								var scale2 = 1 / Math.sqrt(l22);
+								var this18 = { x : hit.x * scale2, y : hit.y * scale2, z : hit.z * scale2};
+								grabPoint = this18;
+							}
+						}
+					}
+				}
+				if(_this.mouseGrab == null && grabPoint != null) {
+					var t = _this.object;
+					_this.mouseGrab = { x : t.e0 * grabPoint.x + t.e1 * grabPoint.y + t.e2 * grabPoint.z, y : t.e4 * grabPoint.x + t.e5 * grabPoint.y + t.e6 * grabPoint.z, z : t.e8 * grabPoint.x + t.e9 * grabPoint.y + t.e10 * grabPoint.z};
+				}
+				if(_this.mouseGrab != null && grabPoint != null) {
+					var t1 = _this.object;
+					var p1 = _this.mouseGrab;
+					origGrab_x = t1.e0 * p1.x + t1.e4 * p1.y + t1.e8 * p1.z;
+					origGrab_y = t1.e1 * p1.x + t1.e5 * p1.y + t1.e9 * p1.z;
+					origGrab_z = t1.e2 * p1.x + t1.e6 * p1.y + t1.e10 * p1.z;
+					var this19 = { x : origGrab_y * grabPoint.z - origGrab_z * grabPoint.y, y : origGrab_z * grabPoint.x - origGrab_x * grabPoint.z, z : origGrab_x * grabPoint.y - origGrab_y * grabPoint.x};
+					var axis = this19;
+					var this20 = { x : axis.x * 0.95, y : axis.y * 0.95, z : axis.z * 0.95};
+					axis = this20;
+					var angle = Math.asin(Math.sqrt(axis.x * axis.x + axis.y * axis.y + axis.z * axis.z));
+					if(angle > Math.PI / 8) {
+						angle = Math.PI / 8;
+					}
+					var l23 = axis.x * axis.x + axis.y * axis.y + axis.z * axis.z;
+					var axis1;
+					if(l23 <= 0) {
+						var this21 = { x : 1., y : 0., z : 0.};
+						axis1 = this21;
+					} else {
+						var scale3 = 1 / Math.sqrt(l23);
+						var this22 = { x : axis.x * scale3, y : axis.y * scale3, z : axis.z * scale3};
+						axis1 = this22;
+					}
+					var c = Math.cos(angle);
+					var s3 = Math.sin(angle);
+					var C = 1 - c;
+					var xs = axis1.x * s3;
+					var ys = axis1.y * s3;
+					var zs = axis1.z * s3;
+					var xC = axis1.x * C;
+					var yC = axis1.y * C;
+					var zC = axis1.z * C;
+					var xyC = axis1.x * yC;
+					var yzC = axis1.y * zC;
+					var zxC = axis1.z * xC;
+					var a = new canvasImageTriangle_AffineMatrix();
+					a.e0 = axis1.x * xC + c;
+					a.e4 = xyC - zs;
+					a.e8 = zxC + ys;
+					a.e12 = 0;
+					a.e1 = xyC + zs;
+					a.e5 = axis1.y * yC + c;
+					a.e9 = yzC - xs;
+					a.e13 = 0;
+					a.e2 = zxC - ys;
+					a.e6 = yzC + xs;
+					a.e10 = axis1.z * zC + c;
+					a.e14 = 0;
+					var mat = a;
+					var b4 = _this.object;
+					var a0 = mat.e0;
+					var a1 = mat.e1;
+					var a2 = mat.e2;
+					var a4 = mat.e4;
+					var a5 = mat.e5;
+					var a6 = mat.e6;
+					var a8 = mat.e8;
+					var a9 = mat.e9;
+					var a10 = mat.e10;
+					var a12 = mat.e12;
+					var a13 = mat.e13;
+					var a14 = mat.e14;
+					var b0 = b4.e0;
+					var b11 = b4.e1;
+					var b21 = b4.e2;
+					var b41 = b4.e4;
+					var b5 = b4.e5;
+					var b6 = b4.e6;
+					var b8 = b4.e8;
+					var b9 = b4.e9;
+					var b10 = b4.e10;
+					var b12 = b4.e12;
+					var b13 = b4.e13;
+					var b14 = b4.e14;
+					var a3 = new canvasImageTriangle_AffineMatrix();
+					a3.e0 = a0 * b0 + a4 * b11 + a8 * b21;
+					a3.e4 = a0 * b41 + a4 * b5 + a8 * b6;
+					a3.e8 = a0 * b8 + a4 * b9 + a8 * b10;
+					a3.e12 = a0 * b12 + a4 * b13 + a8 * b14 + a12;
+					a3.e1 = a1 * b0 + a5 * b11 + a9 * b21;
+					a3.e5 = a1 * b41 + a5 * b5 + a9 * b6;
+					a3.e9 = a1 * b8 + a5 * b9 + a9 * b10;
+					a3.e13 = a1 * b12 + a5 * b13 + a9 * b14 + a13;
+					a3.e2 = a2 * b0 + a6 * b11 + a10 * b21;
+					a3.e6 = a2 * b41 + a6 * b5 + a10 * b6;
+					a3.e10 = a2 * b8 + a6 * b9 + a10 * b10;
+					a3.e14 = a2 * b12 + a6 * b13 + a10 * b14 + a14;
+					_this.object = a3;
+					var a7 = _this.object;
+					var this23 = { x : a7.e0, y : a7.e1, z : a7.e2};
+					var v = this23;
+					var l24 = v.x * v.x + v.y * v.y + v.z * v.z;
+					var new_x;
+					if(l24 <= 0) {
+						var this24 = { x : 1., y : 0., z : 0.};
+						new_x = this24;
+					} else {
+						var scale4 = 1 / Math.sqrt(l24);
+						var this25 = { x : v.x * scale4, y : v.y * scale4, z : v.z * scale4};
+						new_x = this25;
+					}
+					var this26 = { x : a7.e4, y : a7.e5, z : a7.e6};
+					var b7 = this26;
+					var this27 = { x : new_x.y * b7.z - new_x.z * b7.y, y : new_x.z * b7.x - new_x.x * b7.z, z : new_x.x * b7.y - new_x.y * b7.x};
+					var v1 = this27;
+					var l25 = v1.x * v1.x + v1.y * v1.y + v1.z * v1.z;
+					var new_z;
+					if(l25 <= 0) {
+						var this28 = { x : 1., y : 0., z : 0.};
+						new_z = this28;
+					} else {
+						var scale5 = 1 / Math.sqrt(l25);
+						var this29 = { x : v1.x * scale5, y : v1.y * scale5, z : v1.z * scale5};
+						new_z = this29;
+					}
+					var this30 = { x : new_z.y * new_x.z - new_z.z * new_x.y, y : new_z.z * new_x.x - new_z.x * new_x.z, z : new_z.x * new_x.y - new_z.y * new_x.x};
+					var new_y = this30;
+					a7.e0 = new_x.x;
+					a7.e1 = new_x.y;
+					a7.e2 = new_x.z;
+					a7.e4 = new_y.x;
+					a7.e5 = new_y.y;
+					a7.e6 = new_y.z;
+					a7.e8 = new_z.x;
+					a7.e9 = new_z.y;
+					a7.e10 = new_z.z;
+					var s4 = 1000 / _this.dt;
+					var this31 = { x : axis.x * s4, y : axis.y * s4, z : axis.z * s4};
+					_this.omega = this31;
+				}
+			} else {
+				_this.mouseGrab = null;
+				var v2 = _this.omega;
+				var this32 = { x : v2.x * 0.95, y : v2.y * 0.95, z : v2.z * 0.95};
+				_this.omega = this32;
+				var a11 = _this.omega;
+				var b15 = _this.omega;
+				var dotOmegaProduct = a11.x * b15.x + a11.y * b15.y + a11.z * b15.z;
+				if(dotOmegaProduct < 0.000000001 && _this.bigger == false && _this.smaller == false) {
+					var this33 = { x : 0, y : 0, z : 0};
+					_this.omega = this33;
+				} else {
+					var v3 = _this.omega;
+					var s5 = _this.dt / 1000;
+					var this34 = { x : v3.x * s5, y : v3.y * s5, z : v3.z * s5};
+					var scaled = this34;
+					var angle1 = Math.asin(Math.sqrt(scaled.x * scaled.x + scaled.y * scaled.y + scaled.z * scaled.z));
+					if(angle1 > Math.PI / 8) {
+						angle1 = Math.PI / 8;
+					}
+					var l26 = scaled.x * scaled.x + scaled.y * scaled.y + scaled.z * scaled.z;
+					var axis2;
+					if(l26 <= 0) {
+						var this35 = { x : 1., y : 0., z : 0.};
+						axis2 = this35;
+					} else {
+						var scale6 = 1 / Math.sqrt(l26);
+						var this36 = { x : scaled.x * scale6, y : scaled.y * scale6, z : scaled.z * scale6};
+						axis2 = this36;
+					}
+					var c1 = Math.cos(angle1);
+					var s6 = Math.sin(angle1);
+					var C1 = 1 - c1;
+					var xs1 = axis2.x * s6;
+					var ys1 = axis2.y * s6;
+					var zs1 = axis2.z * s6;
+					var xC1 = axis2.x * C1;
+					var yC1 = axis2.y * C1;
+					var zC1 = axis2.z * C1;
+					var xyC1 = axis2.x * yC1;
+					var yzC1 = axis2.y * zC1;
+					var zxC1 = axis2.z * xC1;
+					var a15 = new canvasImageTriangle_AffineMatrix();
+					a15.e0 = axis2.x * xC1 + c1;
+					a15.e4 = xyC1 - zs1;
+					a15.e8 = zxC1 + ys1;
+					a15.e12 = 0;
+					a15.e1 = xyC1 + zs1;
+					a15.e5 = axis2.y * yC1 + c1;
+					a15.e9 = yzC1 - xs1;
+					a15.e13 = 0;
+					a15.e2 = zxC1 - ys1;
+					a15.e6 = yzC1 + xs1;
+					a15.e10 = axis2.z * zC1 + c1;
+					a15.e14 = 0;
+					var mat1 = a15;
+					var b16 = _this.object;
+					var a01 = mat1.e0;
+					var a16 = mat1.e1;
+					var a21 = mat1.e2;
+					var a41 = mat1.e4;
+					var a51 = mat1.e5;
+					var a61 = mat1.e6;
+					var a81 = mat1.e8;
+					var a91 = mat1.e9;
+					var a101 = mat1.e10;
+					var a121 = mat1.e12;
+					var a131 = mat1.e13;
+					var a141 = mat1.e14;
+					var b01 = b16.e0;
+					var b17 = b16.e1;
+					var b22 = b16.e2;
+					var b42 = b16.e4;
+					var b51 = b16.e5;
+					var b61 = b16.e6;
+					var b81 = b16.e8;
+					var b91 = b16.e9;
+					var b101 = b16.e10;
+					var b121 = b16.e12;
+					var b131 = b16.e13;
+					var b141 = b16.e14;
+					var a17 = new canvasImageTriangle_AffineMatrix();
+					a17.e0 = a01 * b01 + a41 * b17 + a81 * b22;
+					a17.e4 = a01 * b42 + a41 * b51 + a81 * b61;
+					a17.e8 = a01 * b81 + a41 * b91 + a81 * b101;
+					a17.e12 = a01 * b121 + a41 * b131 + a81 * b141 + a121;
+					a17.e1 = a16 * b01 + a51 * b17 + a91 * b22;
+					a17.e5 = a16 * b42 + a51 * b51 + a91 * b61;
+					a17.e9 = a16 * b81 + a51 * b91 + a91 * b101;
+					a17.e13 = a16 * b121 + a51 * b131 + a91 * b141 + a131;
+					a17.e2 = a21 * b01 + a61 * b17 + a101 * b22;
+					a17.e6 = a21 * b42 + a61 * b51 + a101 * b61;
+					a17.e10 = a21 * b81 + a61 * b91 + a101 * b101;
+					a17.e14 = a21 * b121 + a61 * b131 + a101 * b141 + a141;
+					_this.object = a17;
+					var a18 = _this.object;
+					var this37 = { x : a18.e0, y : a18.e1, z : a18.e2};
+					var v4 = this37;
+					var l27 = v4.x * v4.x + v4.y * v4.y + v4.z * v4.z;
+					var new_x1;
+					if(l27 <= 0) {
+						var this38 = { x : 1., y : 0., z : 0.};
+						new_x1 = this38;
+					} else {
+						var scale7 = 1 / Math.sqrt(l27);
+						var this39 = { x : v4.x * scale7, y : v4.y * scale7, z : v4.z * scale7};
+						new_x1 = this39;
+					}
+					var this40 = { x : a18.e4, y : a18.e5, z : a18.e6};
+					var b18 = this40;
+					var this41 = { x : new_x1.y * b18.z - new_x1.z * b18.y, y : new_x1.z * b18.x - new_x1.x * b18.z, z : new_x1.x * b18.y - new_x1.y * b18.x};
+					var v5 = this41;
+					var l28 = v5.x * v5.x + v5.y * v5.y + v5.z * v5.z;
+					var new_z1;
+					if(l28 <= 0) {
+						var this42 = { x : 1., y : 0., z : 0.};
+						new_z1 = this42;
+					} else {
+						var scale8 = 1 / Math.sqrt(l28);
+						var this43 = { x : v5.x * scale8, y : v5.y * scale8, z : v5.z * scale8};
+						new_z1 = this43;
+					}
+					var this44 = { x : new_z1.y * new_x1.z - new_z1.z * new_x1.y, y : new_z1.z * new_x1.x - new_z1.x * new_x1.z, z : new_z1.x * new_x1.y - new_z1.y * new_x1.x};
+					var new_y1 = this44;
+					a18.e0 = new_x1.x;
+					a18.e1 = new_x1.y;
+					a18.e2 = new_x1.z;
+					a18.e4 = new_y1.x;
+					a18.e5 = new_y1.y;
+					a18.e6 = new_y1.z;
+					a18.e8 = new_z1.x;
+					a18.e9 = new_z1.y;
+					a18.e10 = new_z1.z;
+				}
+			}
+			this.perspectiveTri.render(this.vertices(),this.width,this.height);
+			var _this1 = this.world;
+			var orient = _this1.camera;
+			var e8_ = -orient.e0;
+			var e9_ = -orient.e1;
+			var e10_ = -orient.e2;
+			var a19 = new canvasImageTriangle_AffineMatrix();
+			a19.e0 = orient.e8;
+			a19.e4 = orient.e4;
+			a19.e8 = e8_;
+			a19.e12 = orient.e12;
+			a19.e1 = orient.e9;
+			a19.e5 = orient.e5;
+			a19.e9 = e9_;
+			a19.e13 = orient.e13;
+			a19.e2 = orient.e10;
+			a19.e6 = orient.e6;
+			a19.e10 = e10_;
+			a19.e14 = orient.e14;
+			var m = a19;
+			var e1_ = m.e4;
+			var e2_ = m.e8;
+			var e6_ = m.e9;
+			var a20 = new canvasImageTriangle_AffineMatrix();
+			a20.e0 = m.e0;
+			a20.e4 = m.e1;
+			a20.e8 = m.e2;
+			a20.e12 = 0;
+			a20.e1 = e1_;
+			a20.e5 = m.e5;
+			a20.e9 = m.e6;
+			a20.e13 = 0;
+			a20.e2 = e2_;
+			a20.e6 = e6_;
+			a20.e10 = m.e10;
+			a20.e14 = 0;
+			var m1 = a20;
+			p_x = m.e12;
+			p_y = m.e13;
+			p_z = m.e14;
+			trans_prime_x = m1.e0 * p_x + m1.e4 * p_y + m1.e8 * p_z + m1.e12;
+			trans_prime_y = m1.e1 * p_x + m1.e5 * p_y + m1.e9 * p_z + m1.e13;
+			trans_prime_z = m1.e2 * p_x + m1.e6 * p_y + m1.e10 * p_z + m1.e14;
+			m1.e12 = -trans_prime_x;
+			m1.e13 = -trans_prime_y;
+			m1.e14 = -trans_prime_z;
+			var view_mat = m1;
+			var a22 = _this1.proj;
+			var out = _this1.temp_mat0;
+			var a02 = a22.e0;
+			var a110 = a22.e1;
+			var a23 = a22.e2;
+			var a42 = a22.e4;
+			var a52 = a22.e5;
+			var a62 = a22.e6;
+			var a82 = a22.e8;
+			var a92 = a22.e9;
+			var a102 = a22.e10;
+			var a122 = a22.e12;
+			var a132 = a22.e13;
+			var a142 = a22.e14;
+			var b02 = view_mat.e0;
+			var b19 = view_mat.e1;
+			var b23 = view_mat.e2;
+			var b43 = view_mat.e4;
+			var b52 = view_mat.e5;
+			var b62 = view_mat.e6;
+			var b82 = view_mat.e8;
+			var b92 = view_mat.e9;
+			var b102 = view_mat.e10;
+			var b122 = view_mat.e12;
+			var b132 = view_mat.e13;
+			var b142 = view_mat.e14;
+			out.e0 = a02 * b02 + a42 * b19 + a82 * b23;
+			out.e4 = a02 * b43 + a42 * b52 + a82 * b62;
+			out.e8 = a02 * b82 + a42 * b92 + a82 * b102;
+			out.e12 = a02 * b122 + a42 * b132 + a82 * b142 + a122;
+			out.e1 = a110 * b02 + a52 * b19 + a92 * b23;
+			out.e5 = a110 * b43 + a52 * b52 + a92 * b62;
+			out.e9 = a110 * b82 + a52 * b92 + a92 * b102;
+			out.e13 = a110 * b122 + a52 * b132 + a92 * b142 + a132;
+			out.e2 = a23 * b02 + a62 * b19 + a102 * b23;
+			out.e6 = a23 * b43 + a62 * b52 + a102 * b62;
+			out.e10 = a23 * b82 + a62 * b92 + a102 * b102;
+			out.e14 = a23 * b122 + a62 * b132 + a102 * b142 + a142;
+			var a24 = _this1.temp_mat0;
+			var b20 = _this1.object;
+			var out1 = _this1.temp_mat1;
+			var a03 = a24.e0;
+			var a111 = a24.e1;
+			var a25 = a24.e2;
+			var a43 = a24.e4;
+			var a53 = a24.e5;
+			var a63 = a24.e6;
+			var a83 = a24.e8;
+			var a93 = a24.e9;
+			var a103 = a24.e10;
+			var a123 = a24.e12;
+			var a133 = a24.e13;
+			var a143 = a24.e14;
+			var b03 = b20.e0;
+			var b110 = b20.e1;
+			var b24 = b20.e2;
+			var b44 = b20.e4;
+			var b53 = b20.e5;
+			var b63 = b20.e6;
+			var b83 = b20.e8;
+			var b93 = b20.e9;
+			var b103 = b20.e10;
+			var b123 = b20.e12;
+			var b133 = b20.e13;
+			var b143 = b20.e14;
+			out1.e0 = a03 * b03 + a43 * b110 + a83 * b24;
+			out1.e4 = a03 * b44 + a43 * b53 + a83 * b63;
+			out1.e8 = a03 * b83 + a43 * b93 + a83 * b103;
+			out1.e12 = a03 * b123 + a43 * b133 + a83 * b143 + a123;
+			out1.e1 = a111 * b03 + a53 * b110 + a93 * b24;
+			out1.e5 = a111 * b44 + a53 * b53 + a93 * b63;
+			out1.e9 = a111 * b83 + a53 * b93 + a93 * b103;
+			out1.e13 = a111 * b123 + a53 * b133 + a93 * b143 + a133;
+			out1.e2 = a25 * b03 + a63 * b110 + a103 * b24;
+			out1.e6 = a25 * b44 + a63 * b53 + a103 * b63;
+			out1.e10 = a25 * b83 + a63 * b93 + a103 * b103;
+			out1.e14 = a25 * b123 + a63 * b133 + a103 * b143 + a143;
+			if(!this.down) {
+				this.renderOn = false;
+			}
+		}
+	}
+	,vertices: function() {
+		var w = this.width;
+		var h = this.height;
+		var verts = [{ x : -1., y : -1., z : 0., u : 0., v : 0.},{ x : 1., y : -1., z : 0., u : w, v : 0.},{ x : 1., y : 1., z : 0., u : w, v : h},{ x : -1., y : 1., z : 0., u : 0., v : h}];
 		var tverts = [];
 		var _g1 = 0;
 		var _g = verts.length;
@@ -340,299 +592,35 @@ Main.prototype = {
 			var v = verts[i];
 			var this1 = { x : v.x, y : v.y, z : v.z};
 			var p = this1;
-			var t = this.temp_mat1;
+			var t = this.world.temp_mat1;
 			p = { x : t.e0 * p.x + t.e4 * p.y + t.e8 * p.z + t.e12, y : t.e1 * p.x + t.e5 * p.y + t.e9 * p.z + t.e13, z : t.e2 * p.x + t.e6 * p.y + t.e10 * p.z + t.e14};
-			tverts[i] = { x : p.x, y : p.y, z : p.z, u : verts[i].u, v : verts[i].v};
+			tverts[i] = { x : p.x, y : p.y, z : p.z, u : v.u, v : v.v};
 		}
-		this.perspectiveTri.render(tverts,this.width,this.height);
+		return tverts;
 	}
-	,rotateObject: function(scaled_axis) {
-		var angle = Math.asin(Math.sqrt(scaled_axis.x * scaled_axis.x + scaled_axis.y * scaled_axis.y + scaled_axis.z * scaled_axis.z));
-		if(angle > Math.PI / 8) {
-			angle = Math.PI / 8;
-		}
-		var l2 = scaled_axis.x * scaled_axis.x + scaled_axis.y * scaled_axis.y + scaled_axis.z * scaled_axis.z;
-		var axis;
-		if(l2 <= 0) {
-			var this1 = { x : 1., y : 0., z : 0.};
-			axis = this1;
-		} else {
-			var scale = 1 / Math.sqrt(l2);
-			var this2 = { x : scaled_axis.x * scale, y : scaled_axis.y * scale, z : scaled_axis.z * scale};
-			axis = this2;
-		}
-		var c = Math.cos(angle);
-		var s = Math.sin(angle);
-		var C = 1 - c;
-		var xs = axis.x * s;
-		var ys = axis.y * s;
-		var zs = axis.z * s;
-		var xC = axis.x * C;
-		var yC = axis.y * C;
-		var zC = axis.z * C;
-		var xyC = axis.x * yC;
-		var yzC = axis.y * zC;
-		var zxC = axis.z * xC;
-		var a = new canvasImageTriangle_AffineMatrix();
-		a.e0 = axis.x * xC + c;
-		a.e4 = xyC - zs;
-		a.e8 = zxC + ys;
-		a.e12 = 0;
-		a.e1 = xyC + zs;
-		a.e5 = axis.y * yC + c;
-		a.e9 = yzC - xs;
-		a.e13 = 0;
-		a.e2 = zxC - ys;
-		a.e6 = yzC + xs;
-		a.e10 = axis.z * zC + c;
-		a.e14 = 0;
-		var b = this.object_mat;
-		var a0 = a.e0;
-		var a1 = a.e1;
-		var a2 = a.e2;
-		var a4 = a.e4;
-		var a5 = a.e5;
-		var a6 = a.e6;
-		var a8 = a.e8;
-		var a9 = a.e9;
-		var a10 = a.e10;
-		var a12 = a.e12;
-		var a13 = a.e13;
-		var a14 = a.e14;
-		var b0 = b.e0;
-		var b1 = b.e1;
-		var b2 = b.e2;
-		var b4 = b.e4;
-		var b5 = b.e5;
-		var b6 = b.e6;
-		var b8 = b.e8;
-		var b9 = b.e9;
-		var b10 = b.e10;
-		var b12 = b.e12;
-		var b13 = b.e13;
-		var b14 = b.e14;
-		var a3 = new canvasImageTriangle_AffineMatrix();
-		a3.e0 = a0 * b0 + a4 * b1 + a8 * b2;
-		a3.e4 = a0 * b4 + a4 * b5 + a8 * b6;
-		a3.e8 = a0 * b8 + a4 * b9 + a8 * b10;
-		a3.e12 = a0 * b12 + a4 * b13 + a8 * b14 + a12;
-		a3.e1 = a1 * b0 + a5 * b1 + a9 * b2;
-		a3.e5 = a1 * b4 + a5 * b5 + a9 * b6;
-		a3.e9 = a1 * b8 + a5 * b9 + a9 * b10;
-		a3.e13 = a1 * b12 + a5 * b13 + a9 * b14 + a13;
-		a3.e2 = a2 * b0 + a6 * b1 + a10 * b2;
-		a3.e6 = a2 * b4 + a6 * b5 + a10 * b6;
-		a3.e10 = a2 * b8 + a6 * b9 + a10 * b10;
-		a3.e14 = a2 * b12 + a6 * b13 + a10 * b14 + a14;
-		this.object_mat = a3;
-		var a7 = this.object_mat;
-		var this3 = { x : a7.e0, y : a7.e1, z : a7.e2};
-		var v = this3;
-		var l21 = v.x * v.x + v.y * v.y + v.z * v.z;
-		var new_x;
-		if(l21 <= 0) {
-			var this4 = { x : 1., y : 0., z : 0.};
-			new_x = this4;
-		} else {
-			var scale1 = 1 / Math.sqrt(l21);
-			var this5 = { x : v.x * scale1, y : v.y * scale1, z : v.z * scale1};
-			new_x = this5;
-		}
-		var this6 = { x : a7.e4, y : a7.e5, z : a7.e6};
-		var b3 = this6;
-		var this7 = { x : new_x.y * b3.z - new_x.z * b3.y, y : new_x.z * b3.x - new_x.x * b3.z, z : new_x.x * b3.y - new_x.y * b3.x};
-		var v1 = this7;
-		var l22 = v1.x * v1.x + v1.y * v1.y + v1.z * v1.z;
-		var new_z;
-		if(l22 <= 0) {
-			var this8 = { x : 1., y : 0., z : 0.};
-			new_z = this8;
-		} else {
-			var scale2 = 1 / Math.sqrt(l22);
-			var this9 = { x : v1.x * scale2, y : v1.y * scale2, z : v1.z * scale2};
-			new_z = this9;
-		}
-		var this10 = { x : new_z.y * new_x.z - new_z.z * new_x.y, y : new_z.z * new_x.x - new_z.x * new_x.z, z : new_z.x * new_x.y - new_z.y * new_x.x};
-		var new_y = this10;
-		a7.e0 = new_x.x;
-		a7.e1 = new_x.y;
-		a7.e2 = new_x.z;
-		a7.e4 = new_y.x;
-		a7.e5 = new_y.y;
-		a7.e6 = new_y.z;
-		a7.e8 = new_z.x;
-		a7.e9 = new_z.y;
-		a7.e10 = new_z.z;
-	}
-	,spin: function() {
-		var orig_grab_point_z;
-		var orig_grab_point_y;
-		var orig_grab_point_x;
-		var t_now = this.getTime();
-		var dt = t_now - this.last_spin_time;
-		this.last_spin_time = t_now;
-		if(dt > 100) {
-			dt = 100;
-		}
-		if(dt < 1) {
-			dt = 1;
-		}
-		if(this.zoom_in_pressed) {
-			this.target_distance -= 2.0 * dt / 1000;
-		}
-		if(this.zoom_out_pressed) {
-			this.target_distance += 2.0 * dt / 1000;
-		}
-		if(this.target_distance < 0) {
-			this.target_distance = 0.;
-		}
-		this.camera_mat.e14 = 0.2 + this.target_distance;
-		if(this.mouse_is_down) {
-			var new_grab_point = this.screenToSpherePt(this.mouse_x,this.mouse_y);
-			if(this.mouse_grab_point == null && new_grab_point != null) {
-				var t = this.object_mat;
-				this.mouse_grab_point = { x : t.e0 * new_grab_point.x + t.e1 * new_grab_point.y + t.e2 * new_grab_point.z, y : t.e4 * new_grab_point.x + t.e5 * new_grab_point.y + t.e6 * new_grab_point.z, z : t.e8 * new_grab_point.x + t.e9 * new_grab_point.y + t.e10 * new_grab_point.z};
-			}
-			if(this.mouse_grab_point != null && new_grab_point != null) {
-				var t1 = this.object_mat;
-				var p = this.mouse_grab_point;
-				orig_grab_point_x = t1.e0 * p.x + t1.e4 * p.y + t1.e8 * p.z;
-				orig_grab_point_y = t1.e1 * p.x + t1.e5 * p.y + t1.e9 * p.z;
-				orig_grab_point_z = t1.e2 * p.x + t1.e6 * p.y + t1.e10 * p.z;
-				var this1 = { x : orig_grab_point_y * new_grab_point.z - orig_grab_point_z * new_grab_point.y, y : orig_grab_point_z * new_grab_point.x - orig_grab_point_x * new_grab_point.z, z : orig_grab_point_x * new_grab_point.y - orig_grab_point_y * new_grab_point.x};
-				var axis = this1;
-				var this2 = { x : axis.x * 0.95, y : axis.y * 0.95, z : axis.z * 0.95};
-				axis = this2;
-				this.rotateObject(axis);
-				var s = 1000 / dt;
-				var this3 = { x : axis.x * s, y : axis.y * s, z : axis.z * s};
-				this.object_omega = this3;
-			}
-		} else {
-			this.mouse_grab_point = null;
-			var v = this.object_omega;
-			var this4 = { x : v.x * 0.95, y : v.y * 0.95, z : v.z * 0.95};
-			this.object_omega = this4;
-			var tmp;
-			var tmp1;
-			var a = this.object_omega;
-			var b = this.object_omega;
-			if(a.x * b.x + a.y * b.y + a.z * b.z < 0.000000001) {
-				tmp1 = this.zoom_in_pressed == false;
-			} else {
-				tmp1 = false;
-			}
-			if(tmp1) {
-				tmp = this.zoom_out_pressed == false;
-			} else {
-				tmp = false;
-			}
-			if(tmp) {
-				var this5 = { x : 0, y : 0, z : 0};
-				this.object_omega = this5;
-				this.stop_spinning();
-				this.draw();
-				return;
-			}
-			var v1 = this.object_omega;
-			var s1 = dt / 1000;
-			var this6 = { x : v1.x * s1, y : v1.y * s1, z : v1.z * s1};
-			var axis1 = this6;
-			this.rotateObject(axis1);
-		}
-		this.draw();
-	}
-	,rayVsUnitSphereClosestPoint: function(p,r) {
-		var p_len2 = p.x * p.x + p.y * p.y + p.z * p.z;
-		if(p_len2 < 1) {
-			return null;
-		}
-		var along_ray = -(p.x * r.x + p.y * r.y + p.z * r.z);
-		if(along_ray < 0) {
-			return null;
-		}
-		var this1 = { x : r.x * along_ray, y : r.y * along_ray, z : r.z * along_ray};
-		var b = this1;
-		var this2 = { x : p.x + b.x, y : p.y + b.y, z : p.z + b.z};
-		var perp = this2;
-		var perp_len2 = perp.x * perp.x + perp.y * perp.y + perp.z * perp.z;
-		if(perp_len2 >= 0.999999) {
-			var l2 = perp.x * perp.x + perp.y * perp.y + perp.z * perp.z;
-			if(l2 <= 0) {
-				var this3 = { x : 1., y : 0., z : 0.};
-				return this3;
-			} else {
-				var scale = 1 / Math.sqrt(l2);
-				var this4 = { x : perp.x * scale, y : perp.y * scale, z : perp.z * scale};
-				return this4;
-			}
-		}
-		var e = Math.sqrt(1 - (perp.x * perp.x + perp.y * perp.y + perp.z * perp.z));
-		var s = along_ray - e;
-		var this5 = { x : r.x * s, y : r.y * s, z : r.z * s};
-		var b1 = this5;
-		var this6 = { x : p.x + b1.x, y : p.y + b1.y, z : p.z + b1.z};
-		var hit = this6;
-		var l21 = hit.x * hit.x + hit.y * hit.y + hit.z * hit.z;
-		if(l21 <= 0) {
-			var this7 = { x : 1., y : 0., z : 0.};
-			return this7;
-		} else {
-			var scale1 = 1 / Math.sqrt(l21);
-			var this8 = { x : hit.x * scale1, y : hit.y * scale1, z : hit.z * scale1};
-			return this8;
-		}
-	}
-	,screenToSpherePt: function(x,y) {
-		var this1 = { x : this.camera_mat.e12, y : this.camera_mat.e13, z : this.camera_mat.e14 + 1};
-		var p = this1;
-		var this2 = { x : this.camera_mat.e0, y : this.camera_mat.e1, z : this.camera_mat.e2};
-		var r = this2;
-		var this3 = { x : this.camera_mat.e4, y : this.camera_mat.e5, z : this.camera_mat.e6};
-		var up = this3;
-		var this4 = { x : this.camera_mat.e8, y : this.camera_mat.e9, z : this.camera_mat.e10};
-		var right = this4;
-		var tan_half = Math.tan(this.horizontal_fov_radians / 2);
-		var s = x * tan_half;
-		var this5 = { x : right.x * s, y : right.y * s, z : right.z * s};
-		var b = this5;
-		var this6 = { x : r.x + b.x, y : r.y + b.y, z : r.z + b.z};
-		r = this6;
-		var s1 = y * tan_half;
-		var this7 = { x : up.x * s1, y : up.y * s1, z : up.z * s1};
-		var b1 = this7;
-		var this8 = { x : r.x + b1.x, y : r.y + b1.y, z : r.z + b1.z};
-		r = this8;
-		var l2 = r.x * r.x + r.y * r.y + r.z * r.z;
-		if(l2 <= 0) {
-			var this9 = { x : 1., y : 0., z : 0.};
-			r = this9;
-		} else {
-			var scale = 1 / Math.sqrt(l2);
-			var this10 = { x : r.x * scale, y : r.y * scale, z : r.z * scale};
-			r = this10;
-		}
-		return this.rayVsUnitSphereClosestPoint(p,r);
+	,initVert: function() {
+		var w = this.width;
+		var h = this.height;
+		return [{ x : -1., y : -1., z : 0., u : 0., v : 0.},{ x : 1., y : -1., z : 0., u : w, v : 0.},{ x : 1., y : 1., z : 0., u : w, v : h},{ x : -1., y : 1., z : 0., u : 0., v : h}];
 	}
 	,rememberMousePos: function(e) {
-		var width_ = this.width;
-		var height_ = this.height;
-		var element = js_Boot.__cast(Main.canvas , HTMLElement);
-		this.mouse_x = (e.clientX - element.offsetLeft) / width_ * 2 - 1;
-		this.mouse_y = -((e.clientY - element.offsetTop - height_ / 2) / (width_ / 2));
+		var w = this.width;
+		var h = this.height;
+		this.x = (e.clientX - this.left) / w * 2 - 1;
+		this.y = -((e.clientY - this.top - h / 2) / (w / 2));
 	}
 	,mousedown: function(e) {
-		this.mouse_is_down = true;
+		this.down = true;
 		this.rememberMousePos(e);
-		this.start_spinning();
+		this.renderOn = true;
 	}
 	,mouseup: function(e) {
-		this.mouse_is_down = false;
+		this.down = false;
 	}
 	,mousemove: function(e) {
 		this.rememberMousePos(e);
-		if(this.mouse_is_down) {
-			this.start_spinning();
+		if(this.down) {
+			this.renderOn = true;
 		}
 	}
 	,keyDown: function(e) {
@@ -640,16 +628,16 @@ Main.prototype = {
 		var keyCode = e.keyCode;
 		switch(keyCode) {
 		case 65:
-			this.zoom_in_pressed = true;
-			this.start_spinning();
+			this.world.bigger = true;
+			this.renderOn = true;
 			break;
 		case 87:
 			this.options.wireframe = !this.options.wireframe;
-			this.start_spinning();
+			this.renderOn = true;
 			break;
 		case 90:
-			this.zoom_out_pressed = true;
-			this.start_spinning();
+			this.world.smaller = true;
+			this.renderOn = true;
 			break;
 		default:
 		}
@@ -659,19 +647,13 @@ Main.prototype = {
 		var keyCode = e.keyCode;
 		switch(keyCode) {
 		case 65:
-			this.zoom_in_pressed = false;
+			this.world.bigger = false;
 			break;
 		case 90:
-			this.zoom_out_pressed = false;
+			this.world.smaller = false;
 			break;
 		default:
 		}
-	}
-	,start_spinning: function() {
-		this.allowSpin = true;
-	}
-	,stop_spinning: function() {
-		this.allowSpin = false;
 	}
 	,__class__: Main
 };
@@ -1333,6 +1315,10 @@ canvasImageTriangle_PerspectiveTri.bisect = function(p,q) {
 };
 canvasImageTriangle_PerspectiveTri.prototype = {
 	render: function(tverts,width,height) {
+		this.surface.globalAlpha = this.options.whiteout_alpha;
+		this.surface.fillStyle = "#FFFFFF";
+		this.surface.fillRect(0,0,width,height);
+		this.surface.globalAlpha = 1;
 		var depth = this.options.nonadaptive_depth;
 		this.draw(tverts[0],tverts[1],tverts[2],depth);
 		this.draw(tverts[0],tverts[2],tverts[3],depth);
@@ -1904,6 +1890,1148 @@ canvasImageTriangle__$Point3D_Point3D_$Impl_$.vectorDistance = function(a,b) {
 	var dz = a.z - b.z;
 	var l2 = dx * dx + dy * dy + dz * dz;
 	return Math.sqrt(l2);
+};
+var canvasImageTriangle_World = function(width,height) {
+	this.smaller = false;
+	this.bigger = false;
+	this.dt = 0;
+	this.distance = 2.;
+	this.lastTime = 0;
+	this.hFov = Math.PI / 2;
+	this.proj = null;
+	this.camera = null;
+	this.object = null;
+	this.temp_mat2 = null;
+	this.temp_mat1 = null;
+	this.temp_mat0 = null;
+	this.dl = null;
+	this.mouseGrab = null;
+	var this1 = { x : 2.6, y : 2.6, z : 0};
+	this.omega = this1;
+	var a = new canvasImageTriangle_AffineMatrix();
+	a.e0 = 1;
+	a.e4 = 0;
+	a.e8 = 0;
+	a.e12 = 0;
+	a.e1 = 0;
+	a.e5 = 1;
+	a.e9 = 0;
+	a.e13 = 0;
+	a.e2 = 0;
+	a.e6 = 0;
+	a.e10 = 1;
+	a.e14 = 0;
+	this.temp_mat0 = a;
+	var a1 = new canvasImageTriangle_AffineMatrix();
+	a1.e0 = 1;
+	a1.e4 = 0;
+	a1.e8 = 0;
+	a1.e12 = 0;
+	a1.e1 = 0;
+	a1.e5 = 1;
+	a1.e9 = 0;
+	a1.e13 = 0;
+	a1.e2 = 0;
+	a1.e6 = 0;
+	a1.e10 = 1;
+	a1.e14 = 0;
+	this.temp_mat1 = a1;
+	var a2 = new canvasImageTriangle_AffineMatrix();
+	a2.e0 = 1;
+	a2.e4 = 0;
+	a2.e8 = 0;
+	a2.e12 = 0;
+	a2.e1 = 0;
+	a2.e5 = 1;
+	a2.e9 = 0;
+	a2.e13 = 0;
+	a2.e2 = 0;
+	a2.e6 = 0;
+	a2.e10 = 1;
+	a2.e14 = 0;
+	this.temp_mat2 = a2;
+	var half_width = width / 2;
+	var half_height = height / 2;
+	var tan_half = Math.tan(this.hFov / 2);
+	var scale = half_width / tan_half;
+	var a3 = new canvasImageTriangle_AffineMatrix();
+	a3.e0 = scale;
+	a3.e4 = 0;
+	a3.e8 = -scale;
+	a3.e12 = 0;
+	a3.e1 = 0;
+	a3.e5 = -scale;
+	a3.e9 = -half_height / tan_half;
+	a3.e13 = 0;
+	a3.e2 = 0;
+	a3.e6 = 0;
+	a3.e10 = -1;
+	a3.e14 = 0;
+	this.proj = a3;
+	var this2 = { x : 0., y : 0., z : 0.};
+	var pos = this2;
+	var this3 = { x : 1., y : 0., z : 0.};
+	var dir = this3;
+	var this4 = { x : 0., y : 1., z : 0.};
+	var up = this4;
+	var this5 = { x : dir.y * up.z - dir.z * up.y, y : dir.z * up.x - dir.x * up.z, z : dir.x * up.y - dir.y * up.x};
+	var right = this5;
+	var a4 = new canvasImageTriangle_AffineMatrix();
+	a4.e0 = dir.x;
+	a4.e4 = up.x;
+	a4.e8 = right.x;
+	a4.e12 = pos.x;
+	a4.e1 = dir.y;
+	a4.e5 = up.y;
+	a4.e9 = right.y;
+	a4.e13 = pos.y;
+	a4.e2 = dir.z;
+	a4.e6 = up.z;
+	a4.e10 = right.z;
+	a4.e14 = pos.z;
+	this.object = a4;
+	var this6 = { x : 0., y : 0., z : 0.2 + this.distance};
+	var pos1 = this6;
+	var this7 = { x : 0., y : 0., z : -1.};
+	var dir1 = this7;
+	var this8 = { x : 0., y : 1., z : 0.};
+	var up1 = this8;
+	var this9 = { x : dir1.y * up1.z - dir1.z * up1.y, y : dir1.z * up1.x - dir1.x * up1.z, z : dir1.x * up1.y - dir1.y * up1.x};
+	var right1 = this9;
+	var a5 = new canvasImageTriangle_AffineMatrix();
+	a5.e0 = dir1.x;
+	a5.e4 = up1.x;
+	a5.e8 = right1.x;
+	a5.e12 = pos1.x;
+	a5.e1 = dir1.y;
+	a5.e5 = up1.y;
+	a5.e9 = right1.y;
+	a5.e13 = pos1.y;
+	a5.e2 = dir1.z;
+	a5.e6 = up1.z;
+	a5.e10 = right1.z;
+	a5.e14 = pos1.z;
+	this.camera = a5;
+};
+canvasImageTriangle_World.__name__ = true;
+canvasImageTriangle_World.rayVsUnitSphereClosestPoint = function(p,r) {
+	if(p.x * p.x + p.y * p.y + p.z * p.z < 1) {
+		return null;
+	}
+	var ray = -(p.x * r.x + p.y * r.y + p.z * r.z);
+	if(ray < 0) {
+		return null;
+	}
+	var this1 = { x : r.x * ray, y : r.y * ray, z : r.z * ray};
+	var b = this1;
+	var this2 = { x : p.x + b.x, y : p.y + b.y, z : p.z + b.z};
+	var perp = this2;
+	if(perp.x * perp.x + perp.y * perp.y + perp.z * perp.z >= 0.999999) {
+		var l2 = perp.x * perp.x + perp.y * perp.y + perp.z * perp.z;
+		if(l2 <= 0) {
+			var this3 = { x : 1., y : 0., z : 0.};
+			return this3;
+		} else {
+			var scale = 1 / Math.sqrt(l2);
+			var this4 = { x : perp.x * scale, y : perp.y * scale, z : perp.z * scale};
+			return this4;
+		}
+	}
+	var e = Math.sqrt(1 - (perp.x * perp.x + perp.y * perp.y + perp.z * perp.z));
+	var s = ray - e;
+	var this5 = { x : r.x * s, y : r.y * s, z : r.z * s};
+	var b1 = this5;
+	var this6 = { x : p.x + b1.x, y : p.y + b1.y, z : p.z + b1.z};
+	var hit = this6;
+	var l21 = hit.x * hit.x + hit.y * hit.y + hit.z * hit.z;
+	if(l21 <= 0) {
+		var this7 = { x : 1., y : 0., z : 0.};
+		return this7;
+	} else {
+		var scale1 = 1 / Math.sqrt(l21);
+		var this8 = { x : hit.x * scale1, y : hit.y * scale1, z : hit.z * scale1};
+		return this8;
+	}
+};
+canvasImageTriangle_World.prototype = {
+	transformVertex: function(v) {
+		var this1 = { x : v.x, y : v.y, z : v.z};
+		var p = this1;
+		var t = this.temp_mat1;
+		p = { x : t.e0 * p.x + t.e4 * p.y + t.e8 * p.z + t.e12, y : t.e1 * p.x + t.e5 * p.y + t.e9 * p.z + t.e13, z : t.e2 * p.x + t.e6 * p.y + t.e10 * p.z + t.e14};
+		return { x : p.x, y : p.y, z : p.z, u : v.u, v : v.v};
+	}
+	,spin: function(x,y,mouseDown) {
+		var origGrab_z;
+		var origGrab_y;
+		var origGrab_x;
+		var now = new Date().getTime() | 0;
+		this.dt = now - this.lastTime;
+		this.lastTime = now;
+		if(this.dt > 100) {
+			this.dt = 100;
+		}
+		if(this.dt < 1) {
+			this.dt = 1;
+		}
+		if(this.bigger) {
+			this.distance -= 2.0 * this.dt / 1000;
+		}
+		if(this.smaller) {
+			this.distance += 2.0 * this.dt / 1000;
+		}
+		if(this.distance < 0) {
+			this.distance = 0.;
+		}
+		this.camera.e14 = 0.2 + this.distance;
+		if(mouseDown) {
+			var this1 = { x : this.camera.e12, y : this.camera.e13, z : this.camera.e14 + 1.};
+			var p = this1;
+			var this2 = { x : this.camera.e0, y : this.camera.e1, z : this.camera.e2};
+			var r = this2;
+			var this3 = { x : this.camera.e4, y : this.camera.e5, z : this.camera.e6};
+			var up = this3;
+			var this4 = { x : this.camera.e8, y : this.camera.e9, z : this.camera.e10};
+			var right = this4;
+			var tan_half = Math.tan(this.hFov / 2);
+			var s = x * tan_half;
+			var this5 = { x : right.x * s, y : right.y * s, z : right.z * s};
+			var b = this5;
+			var this6 = { x : r.x + b.x, y : r.y + b.y, z : r.z + b.z};
+			r = this6;
+			var s1 = y * tan_half;
+			var this7 = { x : up.x * s1, y : up.y * s1, z : up.z * s1};
+			var b1 = this7;
+			var this8 = { x : r.x + b1.x, y : r.y + b1.y, z : r.z + b1.z};
+			r = this8;
+			var l2 = r.x * r.x + r.y * r.y + r.z * r.z;
+			if(l2 <= 0) {
+				var this9 = { x : 1., y : 0., z : 0.};
+				r = this9;
+			} else {
+				var scale = 1 / Math.sqrt(l2);
+				var this10 = { x : r.x * scale, y : r.y * scale, z : r.z * scale};
+				r = this10;
+			}
+			var grabPoint;
+			if(p.x * p.x + p.y * p.y + p.z * p.z < 1) {
+				grabPoint = null;
+			} else {
+				var ray = -(p.x * r.x + p.y * r.y + p.z * r.z);
+				if(ray < 0) {
+					grabPoint = null;
+				} else {
+					var this11 = { x : r.x * ray, y : r.y * ray, z : r.z * ray};
+					var b2 = this11;
+					var this12 = { x : p.x + b2.x, y : p.y + b2.y, z : p.z + b2.z};
+					var perp = this12;
+					if(perp.x * perp.x + perp.y * perp.y + perp.z * perp.z >= 0.999999) {
+						var l21 = perp.x * perp.x + perp.y * perp.y + perp.z * perp.z;
+						if(l21 <= 0) {
+							var this13 = { x : 1., y : 0., z : 0.};
+							grabPoint = this13;
+						} else {
+							var scale1 = 1 / Math.sqrt(l21);
+							var this14 = { x : perp.x * scale1, y : perp.y * scale1, z : perp.z * scale1};
+							grabPoint = this14;
+						}
+					} else {
+						var e = Math.sqrt(1 - (perp.x * perp.x + perp.y * perp.y + perp.z * perp.z));
+						var s2 = ray - e;
+						var this15 = { x : r.x * s2, y : r.y * s2, z : r.z * s2};
+						var b3 = this15;
+						var this16 = { x : p.x + b3.x, y : p.y + b3.y, z : p.z + b3.z};
+						var hit = this16;
+						var l22 = hit.x * hit.x + hit.y * hit.y + hit.z * hit.z;
+						if(l22 <= 0) {
+							var this17 = { x : 1., y : 0., z : 0.};
+							grabPoint = this17;
+						} else {
+							var scale2 = 1 / Math.sqrt(l22);
+							var this18 = { x : hit.x * scale2, y : hit.y * scale2, z : hit.z * scale2};
+							grabPoint = this18;
+						}
+					}
+				}
+			}
+			if(this.mouseGrab == null && grabPoint != null) {
+				var t = this.object;
+				this.mouseGrab = { x : t.e0 * grabPoint.x + t.e1 * grabPoint.y + t.e2 * grabPoint.z, y : t.e4 * grabPoint.x + t.e5 * grabPoint.y + t.e6 * grabPoint.z, z : t.e8 * grabPoint.x + t.e9 * grabPoint.y + t.e10 * grabPoint.z};
+			}
+			if(this.mouseGrab != null && grabPoint != null) {
+				var t1 = this.object;
+				var p1 = this.mouseGrab;
+				origGrab_x = t1.e0 * p1.x + t1.e4 * p1.y + t1.e8 * p1.z;
+				origGrab_y = t1.e1 * p1.x + t1.e5 * p1.y + t1.e9 * p1.z;
+				origGrab_z = t1.e2 * p1.x + t1.e6 * p1.y + t1.e10 * p1.z;
+				var this19 = { x : origGrab_y * grabPoint.z - origGrab_z * grabPoint.y, y : origGrab_z * grabPoint.x - origGrab_x * grabPoint.z, z : origGrab_x * grabPoint.y - origGrab_y * grabPoint.x};
+				var axis = this19;
+				var this20 = { x : axis.x * 0.95, y : axis.y * 0.95, z : axis.z * 0.95};
+				axis = this20;
+				var angle = Math.asin(Math.sqrt(axis.x * axis.x + axis.y * axis.y + axis.z * axis.z));
+				if(angle > Math.PI / 8) {
+					angle = Math.PI / 8;
+				}
+				var l23 = axis.x * axis.x + axis.y * axis.y + axis.z * axis.z;
+				var axis1;
+				if(l23 <= 0) {
+					var this21 = { x : 1., y : 0., z : 0.};
+					axis1 = this21;
+				} else {
+					var scale3 = 1 / Math.sqrt(l23);
+					var this22 = { x : axis.x * scale3, y : axis.y * scale3, z : axis.z * scale3};
+					axis1 = this22;
+				}
+				var c = Math.cos(angle);
+				var s3 = Math.sin(angle);
+				var C = 1 - c;
+				var xs = axis1.x * s3;
+				var ys = axis1.y * s3;
+				var zs = axis1.z * s3;
+				var xC = axis1.x * C;
+				var yC = axis1.y * C;
+				var zC = axis1.z * C;
+				var xyC = axis1.x * yC;
+				var yzC = axis1.y * zC;
+				var zxC = axis1.z * xC;
+				var a = new canvasImageTriangle_AffineMatrix();
+				a.e0 = axis1.x * xC + c;
+				a.e4 = xyC - zs;
+				a.e8 = zxC + ys;
+				a.e12 = 0;
+				a.e1 = xyC + zs;
+				a.e5 = axis1.y * yC + c;
+				a.e9 = yzC - xs;
+				a.e13 = 0;
+				a.e2 = zxC - ys;
+				a.e6 = yzC + xs;
+				a.e10 = axis1.z * zC + c;
+				a.e14 = 0;
+				var mat = a;
+				var b4 = this.object;
+				var a0 = mat.e0;
+				var a1 = mat.e1;
+				var a2 = mat.e2;
+				var a4 = mat.e4;
+				var a5 = mat.e5;
+				var a6 = mat.e6;
+				var a8 = mat.e8;
+				var a9 = mat.e9;
+				var a10 = mat.e10;
+				var a12 = mat.e12;
+				var a13 = mat.e13;
+				var a14 = mat.e14;
+				var b0 = b4.e0;
+				var b11 = b4.e1;
+				var b21 = b4.e2;
+				var b41 = b4.e4;
+				var b5 = b4.e5;
+				var b6 = b4.e6;
+				var b8 = b4.e8;
+				var b9 = b4.e9;
+				var b10 = b4.e10;
+				var b12 = b4.e12;
+				var b13 = b4.e13;
+				var b14 = b4.e14;
+				var a3 = new canvasImageTriangle_AffineMatrix();
+				a3.e0 = a0 * b0 + a4 * b11 + a8 * b21;
+				a3.e4 = a0 * b41 + a4 * b5 + a8 * b6;
+				a3.e8 = a0 * b8 + a4 * b9 + a8 * b10;
+				a3.e12 = a0 * b12 + a4 * b13 + a8 * b14 + a12;
+				a3.e1 = a1 * b0 + a5 * b11 + a9 * b21;
+				a3.e5 = a1 * b41 + a5 * b5 + a9 * b6;
+				a3.e9 = a1 * b8 + a5 * b9 + a9 * b10;
+				a3.e13 = a1 * b12 + a5 * b13 + a9 * b14 + a13;
+				a3.e2 = a2 * b0 + a6 * b11 + a10 * b21;
+				a3.e6 = a2 * b41 + a6 * b5 + a10 * b6;
+				a3.e10 = a2 * b8 + a6 * b9 + a10 * b10;
+				a3.e14 = a2 * b12 + a6 * b13 + a10 * b14 + a14;
+				this.object = a3;
+				var a7 = this.object;
+				var this23 = { x : a7.e0, y : a7.e1, z : a7.e2};
+				var v = this23;
+				var l24 = v.x * v.x + v.y * v.y + v.z * v.z;
+				var new_x;
+				if(l24 <= 0) {
+					var this24 = { x : 1., y : 0., z : 0.};
+					new_x = this24;
+				} else {
+					var scale4 = 1 / Math.sqrt(l24);
+					var this25 = { x : v.x * scale4, y : v.y * scale4, z : v.z * scale4};
+					new_x = this25;
+				}
+				var this26 = { x : a7.e4, y : a7.e5, z : a7.e6};
+				var b7 = this26;
+				var this27 = { x : new_x.y * b7.z - new_x.z * b7.y, y : new_x.z * b7.x - new_x.x * b7.z, z : new_x.x * b7.y - new_x.y * b7.x};
+				var v1 = this27;
+				var l25 = v1.x * v1.x + v1.y * v1.y + v1.z * v1.z;
+				var new_z;
+				if(l25 <= 0) {
+					var this28 = { x : 1., y : 0., z : 0.};
+					new_z = this28;
+				} else {
+					var scale5 = 1 / Math.sqrt(l25);
+					var this29 = { x : v1.x * scale5, y : v1.y * scale5, z : v1.z * scale5};
+					new_z = this29;
+				}
+				var this30 = { x : new_z.y * new_x.z - new_z.z * new_x.y, y : new_z.z * new_x.x - new_z.x * new_x.z, z : new_z.x * new_x.y - new_z.y * new_x.x};
+				var new_y = this30;
+				a7.e0 = new_x.x;
+				a7.e1 = new_x.y;
+				a7.e2 = new_x.z;
+				a7.e4 = new_y.x;
+				a7.e5 = new_y.y;
+				a7.e6 = new_y.z;
+				a7.e8 = new_z.x;
+				a7.e9 = new_z.y;
+				a7.e10 = new_z.z;
+				var s4 = 1000 / this.dt;
+				var this31 = { x : axis.x * s4, y : axis.y * s4, z : axis.z * s4};
+				this.omega = this31;
+			}
+		} else {
+			this.mouseGrab = null;
+			var v2 = this.omega;
+			var this32 = { x : v2.x * 0.95, y : v2.y * 0.95, z : v2.z * 0.95};
+			this.omega = this32;
+			var a11 = this.omega;
+			var b15 = this.omega;
+			var dotOmegaProduct = a11.x * b15.x + a11.y * b15.y + a11.z * b15.z;
+			if(dotOmegaProduct < 0.000000001 && this.bigger == false && this.smaller == false) {
+				var this33 = { x : 0, y : 0, z : 0};
+				this.omega = this33;
+			} else {
+				var v3 = this.omega;
+				var s5 = this.dt / 1000;
+				var this34 = { x : v3.x * s5, y : v3.y * s5, z : v3.z * s5};
+				var scaled = this34;
+				var angle1 = Math.asin(Math.sqrt(scaled.x * scaled.x + scaled.y * scaled.y + scaled.z * scaled.z));
+				if(angle1 > Math.PI / 8) {
+					angle1 = Math.PI / 8;
+				}
+				var l26 = scaled.x * scaled.x + scaled.y * scaled.y + scaled.z * scaled.z;
+				var axis2;
+				if(l26 <= 0) {
+					var this35 = { x : 1., y : 0., z : 0.};
+					axis2 = this35;
+				} else {
+					var scale6 = 1 / Math.sqrt(l26);
+					var this36 = { x : scaled.x * scale6, y : scaled.y * scale6, z : scaled.z * scale6};
+					axis2 = this36;
+				}
+				var c1 = Math.cos(angle1);
+				var s6 = Math.sin(angle1);
+				var C1 = 1 - c1;
+				var xs1 = axis2.x * s6;
+				var ys1 = axis2.y * s6;
+				var zs1 = axis2.z * s6;
+				var xC1 = axis2.x * C1;
+				var yC1 = axis2.y * C1;
+				var zC1 = axis2.z * C1;
+				var xyC1 = axis2.x * yC1;
+				var yzC1 = axis2.y * zC1;
+				var zxC1 = axis2.z * xC1;
+				var a15 = new canvasImageTriangle_AffineMatrix();
+				a15.e0 = axis2.x * xC1 + c1;
+				a15.e4 = xyC1 - zs1;
+				a15.e8 = zxC1 + ys1;
+				a15.e12 = 0;
+				a15.e1 = xyC1 + zs1;
+				a15.e5 = axis2.y * yC1 + c1;
+				a15.e9 = yzC1 - xs1;
+				a15.e13 = 0;
+				a15.e2 = zxC1 - ys1;
+				a15.e6 = yzC1 + xs1;
+				a15.e10 = axis2.z * zC1 + c1;
+				a15.e14 = 0;
+				var mat1 = a15;
+				var b16 = this.object;
+				var a01 = mat1.e0;
+				var a16 = mat1.e1;
+				var a21 = mat1.e2;
+				var a41 = mat1.e4;
+				var a51 = mat1.e5;
+				var a61 = mat1.e6;
+				var a81 = mat1.e8;
+				var a91 = mat1.e9;
+				var a101 = mat1.e10;
+				var a121 = mat1.e12;
+				var a131 = mat1.e13;
+				var a141 = mat1.e14;
+				var b01 = b16.e0;
+				var b17 = b16.e1;
+				var b22 = b16.e2;
+				var b42 = b16.e4;
+				var b51 = b16.e5;
+				var b61 = b16.e6;
+				var b81 = b16.e8;
+				var b91 = b16.e9;
+				var b101 = b16.e10;
+				var b121 = b16.e12;
+				var b131 = b16.e13;
+				var b141 = b16.e14;
+				var a17 = new canvasImageTriangle_AffineMatrix();
+				a17.e0 = a01 * b01 + a41 * b17 + a81 * b22;
+				a17.e4 = a01 * b42 + a41 * b51 + a81 * b61;
+				a17.e8 = a01 * b81 + a41 * b91 + a81 * b101;
+				a17.e12 = a01 * b121 + a41 * b131 + a81 * b141 + a121;
+				a17.e1 = a16 * b01 + a51 * b17 + a91 * b22;
+				a17.e5 = a16 * b42 + a51 * b51 + a91 * b61;
+				a17.e9 = a16 * b81 + a51 * b91 + a91 * b101;
+				a17.e13 = a16 * b121 + a51 * b131 + a91 * b141 + a131;
+				a17.e2 = a21 * b01 + a61 * b17 + a101 * b22;
+				a17.e6 = a21 * b42 + a61 * b51 + a101 * b61;
+				a17.e10 = a21 * b81 + a61 * b91 + a101 * b101;
+				a17.e14 = a21 * b121 + a61 * b131 + a101 * b141 + a141;
+				this.object = a17;
+				var a18 = this.object;
+				var this37 = { x : a18.e0, y : a18.e1, z : a18.e2};
+				var v4 = this37;
+				var l27 = v4.x * v4.x + v4.y * v4.y + v4.z * v4.z;
+				var new_x1;
+				if(l27 <= 0) {
+					var this38 = { x : 1., y : 0., z : 0.};
+					new_x1 = this38;
+				} else {
+					var scale7 = 1 / Math.sqrt(l27);
+					var this39 = { x : v4.x * scale7, y : v4.y * scale7, z : v4.z * scale7};
+					new_x1 = this39;
+				}
+				var this40 = { x : a18.e4, y : a18.e5, z : a18.e6};
+				var b18 = this40;
+				var this41 = { x : new_x1.y * b18.z - new_x1.z * b18.y, y : new_x1.z * b18.x - new_x1.x * b18.z, z : new_x1.x * b18.y - new_x1.y * b18.x};
+				var v5 = this41;
+				var l28 = v5.x * v5.x + v5.y * v5.y + v5.z * v5.z;
+				var new_z1;
+				if(l28 <= 0) {
+					var this42 = { x : 1., y : 0., z : 0.};
+					new_z1 = this42;
+				} else {
+					var scale8 = 1 / Math.sqrt(l28);
+					var this43 = { x : v5.x * scale8, y : v5.y * scale8, z : v5.z * scale8};
+					new_z1 = this43;
+				}
+				var this44 = { x : new_z1.y * new_x1.z - new_z1.z * new_x1.y, y : new_z1.z * new_x1.x - new_z1.x * new_x1.z, z : new_z1.x * new_x1.y - new_z1.y * new_x1.x};
+				var new_y1 = this44;
+				a18.e0 = new_x1.x;
+				a18.e1 = new_x1.y;
+				a18.e2 = new_x1.z;
+				a18.e4 = new_y1.x;
+				a18.e5 = new_y1.y;
+				a18.e6 = new_y1.z;
+				a18.e8 = new_z1.x;
+				a18.e9 = new_z1.y;
+				a18.e10 = new_z1.z;
+			}
+		}
+	}
+	,updateMatrix: function() {
+		var trans_prime_z;
+		var trans_prime_y;
+		var trans_prime_x;
+		var p_z;
+		var p_y;
+		var p_x;
+		var orient = this.camera;
+		var e8_ = -orient.e0;
+		var e9_ = -orient.e1;
+		var e10_ = -orient.e2;
+		var a = new canvasImageTriangle_AffineMatrix();
+		a.e0 = orient.e8;
+		a.e4 = orient.e4;
+		a.e8 = e8_;
+		a.e12 = orient.e12;
+		a.e1 = orient.e9;
+		a.e5 = orient.e5;
+		a.e9 = e9_;
+		a.e13 = orient.e13;
+		a.e2 = orient.e10;
+		a.e6 = orient.e6;
+		a.e10 = e10_;
+		a.e14 = orient.e14;
+		var e1_ = a.e4;
+		var e2_ = a.e8;
+		var e6_ = a.e9;
+		var a1 = new canvasImageTriangle_AffineMatrix();
+		a1.e0 = a.e0;
+		a1.e4 = a.e1;
+		a1.e8 = a.e2;
+		a1.e12 = 0;
+		a1.e1 = e1_;
+		a1.e5 = a.e5;
+		a1.e9 = a.e6;
+		a1.e13 = 0;
+		a1.e2 = e2_;
+		a1.e6 = e6_;
+		a1.e10 = a.e10;
+		a1.e14 = 0;
+		p_x = a.e12;
+		p_y = a.e13;
+		p_z = a.e14;
+		trans_prime_x = a1.e0 * p_x + a1.e4 * p_y + a1.e8 * p_z + a1.e12;
+		trans_prime_y = a1.e1 * p_x + a1.e5 * p_y + a1.e9 * p_z + a1.e13;
+		trans_prime_z = a1.e2 * p_x + a1.e6 * p_y + a1.e10 * p_z + a1.e14;
+		a1.e12 = -trans_prime_x;
+		a1.e13 = -trans_prime_y;
+		a1.e14 = -trans_prime_z;
+		var a2 = this.proj;
+		var out = this.temp_mat0;
+		var a0 = a2.e0;
+		var a11 = a2.e1;
+		var a21 = a2.e2;
+		var a4 = a2.e4;
+		var a5 = a2.e5;
+		var a6 = a2.e6;
+		var a8 = a2.e8;
+		var a9 = a2.e9;
+		var a10 = a2.e10;
+		var a12 = a2.e12;
+		var a13 = a2.e13;
+		var a14 = a2.e14;
+		var b0 = a1.e0;
+		var b1 = a1.e1;
+		var b2 = a1.e2;
+		var b4 = a1.e4;
+		var b5 = a1.e5;
+		var b6 = a1.e6;
+		var b8 = a1.e8;
+		var b9 = a1.e9;
+		var b10 = a1.e10;
+		var b12 = a1.e12;
+		var b13 = a1.e13;
+		var b14 = a1.e14;
+		out.e0 = a0 * b0 + a4 * b1 + a8 * b2;
+		out.e4 = a0 * b4 + a4 * b5 + a8 * b6;
+		out.e8 = a0 * b8 + a4 * b9 + a8 * b10;
+		out.e12 = a0 * b12 + a4 * b13 + a8 * b14 + a12;
+		out.e1 = a11 * b0 + a5 * b1 + a9 * b2;
+		out.e5 = a11 * b4 + a5 * b5 + a9 * b6;
+		out.e9 = a11 * b8 + a5 * b9 + a9 * b10;
+		out.e13 = a11 * b12 + a5 * b13 + a9 * b14 + a13;
+		out.e2 = a21 * b0 + a6 * b1 + a10 * b2;
+		out.e6 = a21 * b4 + a6 * b5 + a10 * b6;
+		out.e10 = a21 * b8 + a6 * b9 + a10 * b10;
+		out.e14 = a21 * b12 + a6 * b13 + a10 * b14 + a14;
+		var a3 = this.temp_mat0;
+		var b = this.object;
+		var out1 = this.temp_mat1;
+		var a01 = a3.e0;
+		var a15 = a3.e1;
+		var a22 = a3.e2;
+		var a41 = a3.e4;
+		var a51 = a3.e5;
+		var a61 = a3.e6;
+		var a81 = a3.e8;
+		var a91 = a3.e9;
+		var a101 = a3.e10;
+		var a121 = a3.e12;
+		var a131 = a3.e13;
+		var a141 = a3.e14;
+		var b01 = b.e0;
+		var b11 = b.e1;
+		var b21 = b.e2;
+		var b41 = b.e4;
+		var b51 = b.e5;
+		var b61 = b.e6;
+		var b81 = b.e8;
+		var b91 = b.e9;
+		var b101 = b.e10;
+		var b121 = b.e12;
+		var b131 = b.e13;
+		var b141 = b.e14;
+		out1.e0 = a01 * b01 + a41 * b11 + a81 * b21;
+		out1.e4 = a01 * b41 + a41 * b51 + a81 * b61;
+		out1.e8 = a01 * b81 + a41 * b91 + a81 * b101;
+		out1.e12 = a01 * b121 + a41 * b131 + a81 * b141 + a121;
+		out1.e1 = a15 * b01 + a51 * b11 + a91 * b21;
+		out1.e5 = a15 * b41 + a51 * b51 + a91 * b61;
+		out1.e9 = a15 * b81 + a51 * b91 + a91 * b101;
+		out1.e13 = a15 * b121 + a51 * b131 + a91 * b141 + a131;
+		out1.e2 = a22 * b01 + a61 * b11 + a101 * b21;
+		out1.e6 = a22 * b41 + a61 * b51 + a101 * b61;
+		out1.e10 = a22 * b81 + a61 * b91 + a101 * b101;
+		out1.e14 = a22 * b121 + a61 * b131 + a101 * b141 + a141;
+	}
+	,rotateObject: function(scaled) {
+		var angle = Math.asin(Math.sqrt(scaled.x * scaled.x + scaled.y * scaled.y + scaled.z * scaled.z));
+		if(angle > Math.PI / 8) {
+			angle = Math.PI / 8;
+		}
+		var l2 = scaled.x * scaled.x + scaled.y * scaled.y + scaled.z * scaled.z;
+		var axis;
+		if(l2 <= 0) {
+			var this1 = { x : 1., y : 0., z : 0.};
+			axis = this1;
+		} else {
+			var scale = 1 / Math.sqrt(l2);
+			var this2 = { x : scaled.x * scale, y : scaled.y * scale, z : scaled.z * scale};
+			axis = this2;
+		}
+		var c = Math.cos(angle);
+		var s = Math.sin(angle);
+		var C = 1 - c;
+		var xs = axis.x * s;
+		var ys = axis.y * s;
+		var zs = axis.z * s;
+		var xC = axis.x * C;
+		var yC = axis.y * C;
+		var zC = axis.z * C;
+		var xyC = axis.x * yC;
+		var yzC = axis.y * zC;
+		var zxC = axis.z * xC;
+		var a = new canvasImageTriangle_AffineMatrix();
+		a.e0 = axis.x * xC + c;
+		a.e4 = xyC - zs;
+		a.e8 = zxC + ys;
+		a.e12 = 0;
+		a.e1 = xyC + zs;
+		a.e5 = axis.y * yC + c;
+		a.e9 = yzC - xs;
+		a.e13 = 0;
+		a.e2 = zxC - ys;
+		a.e6 = yzC + xs;
+		a.e10 = axis.z * zC + c;
+		a.e14 = 0;
+		var b = this.object;
+		var a0 = a.e0;
+		var a1 = a.e1;
+		var a2 = a.e2;
+		var a4 = a.e4;
+		var a5 = a.e5;
+		var a6 = a.e6;
+		var a8 = a.e8;
+		var a9 = a.e9;
+		var a10 = a.e10;
+		var a12 = a.e12;
+		var a13 = a.e13;
+		var a14 = a.e14;
+		var b0 = b.e0;
+		var b1 = b.e1;
+		var b2 = b.e2;
+		var b4 = b.e4;
+		var b5 = b.e5;
+		var b6 = b.e6;
+		var b8 = b.e8;
+		var b9 = b.e9;
+		var b10 = b.e10;
+		var b12 = b.e12;
+		var b13 = b.e13;
+		var b14 = b.e14;
+		var a3 = new canvasImageTriangle_AffineMatrix();
+		a3.e0 = a0 * b0 + a4 * b1 + a8 * b2;
+		a3.e4 = a0 * b4 + a4 * b5 + a8 * b6;
+		a3.e8 = a0 * b8 + a4 * b9 + a8 * b10;
+		a3.e12 = a0 * b12 + a4 * b13 + a8 * b14 + a12;
+		a3.e1 = a1 * b0 + a5 * b1 + a9 * b2;
+		a3.e5 = a1 * b4 + a5 * b5 + a9 * b6;
+		a3.e9 = a1 * b8 + a5 * b9 + a9 * b10;
+		a3.e13 = a1 * b12 + a5 * b13 + a9 * b14 + a13;
+		a3.e2 = a2 * b0 + a6 * b1 + a10 * b2;
+		a3.e6 = a2 * b4 + a6 * b5 + a10 * b6;
+		a3.e10 = a2 * b8 + a6 * b9 + a10 * b10;
+		a3.e14 = a2 * b12 + a6 * b13 + a10 * b14 + a14;
+		this.object = a3;
+		var a7 = this.object;
+		var this3 = { x : a7.e0, y : a7.e1, z : a7.e2};
+		var v = this3;
+		var l21 = v.x * v.x + v.y * v.y + v.z * v.z;
+		var new_x;
+		if(l21 <= 0) {
+			var this4 = { x : 1., y : 0., z : 0.};
+			new_x = this4;
+		} else {
+			var scale1 = 1 / Math.sqrt(l21);
+			var this5 = { x : v.x * scale1, y : v.y * scale1, z : v.z * scale1};
+			new_x = this5;
+		}
+		var this6 = { x : a7.e4, y : a7.e5, z : a7.e6};
+		var b3 = this6;
+		var this7 = { x : new_x.y * b3.z - new_x.z * b3.y, y : new_x.z * b3.x - new_x.x * b3.z, z : new_x.x * b3.y - new_x.y * b3.x};
+		var v1 = this7;
+		var l22 = v1.x * v1.x + v1.y * v1.y + v1.z * v1.z;
+		var new_z;
+		if(l22 <= 0) {
+			var this8 = { x : 1., y : 0., z : 0.};
+			new_z = this8;
+		} else {
+			var scale2 = 1 / Math.sqrt(l22);
+			var this9 = { x : v1.x * scale2, y : v1.y * scale2, z : v1.z * scale2};
+			new_z = this9;
+		}
+		var this10 = { x : new_z.y * new_x.z - new_z.z * new_x.y, y : new_z.z * new_x.x - new_z.x * new_x.z, z : new_z.x * new_x.y - new_z.y * new_x.x};
+		var new_y = this10;
+		a7.e0 = new_x.x;
+		a7.e1 = new_x.y;
+		a7.e2 = new_x.z;
+		a7.e4 = new_y.x;
+		a7.e5 = new_y.y;
+		a7.e6 = new_y.z;
+		a7.e8 = new_z.x;
+		a7.e9 = new_z.y;
+		a7.e10 = new_z.z;
+	}
+	,nullGrab: function() {
+		this.mouseGrab = null;
+		var v = this.omega;
+		var this1 = { x : v.x * 0.95, y : v.y * 0.95, z : v.z * 0.95};
+		this.omega = this1;
+		var a = this.omega;
+		var b = this.omega;
+		var dotOmegaProduct = a.x * b.x + a.y * b.y + a.z * b.z;
+		if(dotOmegaProduct < 0.000000001 && this.bigger == false && this.smaller == false) {
+			var this2 = { x : 0, y : 0, z : 0};
+			this.omega = this2;
+		} else {
+			var v1 = this.omega;
+			var s = this.dt / 1000;
+			var this3 = { x : v1.x * s, y : v1.y * s, z : v1.z * s};
+			var scaled = this3;
+			var angle = Math.asin(Math.sqrt(scaled.x * scaled.x + scaled.y * scaled.y + scaled.z * scaled.z));
+			if(angle > Math.PI / 8) {
+				angle = Math.PI / 8;
+			}
+			var l2 = scaled.x * scaled.x + scaled.y * scaled.y + scaled.z * scaled.z;
+			var axis;
+			if(l2 <= 0) {
+				var this4 = { x : 1., y : 0., z : 0.};
+				axis = this4;
+			} else {
+				var scale = 1 / Math.sqrt(l2);
+				var this5 = { x : scaled.x * scale, y : scaled.y * scale, z : scaled.z * scale};
+				axis = this5;
+			}
+			var c = Math.cos(angle);
+			var s1 = Math.sin(angle);
+			var C = 1 - c;
+			var xs = axis.x * s1;
+			var ys = axis.y * s1;
+			var zs = axis.z * s1;
+			var xC = axis.x * C;
+			var yC = axis.y * C;
+			var zC = axis.z * C;
+			var xyC = axis.x * yC;
+			var yzC = axis.y * zC;
+			var zxC = axis.z * xC;
+			var a1 = new canvasImageTriangle_AffineMatrix();
+			a1.e0 = axis.x * xC + c;
+			a1.e4 = xyC - zs;
+			a1.e8 = zxC + ys;
+			a1.e12 = 0;
+			a1.e1 = xyC + zs;
+			a1.e5 = axis.y * yC + c;
+			a1.e9 = yzC - xs;
+			a1.e13 = 0;
+			a1.e2 = zxC - ys;
+			a1.e6 = yzC + xs;
+			a1.e10 = axis.z * zC + c;
+			a1.e14 = 0;
+			var b1 = this.object;
+			var a0 = a1.e0;
+			var a11 = a1.e1;
+			var a2 = a1.e2;
+			var a4 = a1.e4;
+			var a5 = a1.e5;
+			var a6 = a1.e6;
+			var a8 = a1.e8;
+			var a9 = a1.e9;
+			var a10 = a1.e10;
+			var a12 = a1.e12;
+			var a13 = a1.e13;
+			var a14 = a1.e14;
+			var b0 = b1.e0;
+			var b11 = b1.e1;
+			var b2 = b1.e2;
+			var b4 = b1.e4;
+			var b5 = b1.e5;
+			var b6 = b1.e6;
+			var b8 = b1.e8;
+			var b9 = b1.e9;
+			var b10 = b1.e10;
+			var b12 = b1.e12;
+			var b13 = b1.e13;
+			var b14 = b1.e14;
+			var a3 = new canvasImageTriangle_AffineMatrix();
+			a3.e0 = a0 * b0 + a4 * b11 + a8 * b2;
+			a3.e4 = a0 * b4 + a4 * b5 + a8 * b6;
+			a3.e8 = a0 * b8 + a4 * b9 + a8 * b10;
+			a3.e12 = a0 * b12 + a4 * b13 + a8 * b14 + a12;
+			a3.e1 = a11 * b0 + a5 * b11 + a9 * b2;
+			a3.e5 = a11 * b4 + a5 * b5 + a9 * b6;
+			a3.e9 = a11 * b8 + a5 * b9 + a9 * b10;
+			a3.e13 = a11 * b12 + a5 * b13 + a9 * b14 + a13;
+			a3.e2 = a2 * b0 + a6 * b11 + a10 * b2;
+			a3.e6 = a2 * b4 + a6 * b5 + a10 * b6;
+			a3.e10 = a2 * b8 + a6 * b9 + a10 * b10;
+			a3.e14 = a2 * b12 + a6 * b13 + a10 * b14 + a14;
+			this.object = a3;
+			var a7 = this.object;
+			var this6 = { x : a7.e0, y : a7.e1, z : a7.e2};
+			var v2 = this6;
+			var l21 = v2.x * v2.x + v2.y * v2.y + v2.z * v2.z;
+			var new_x;
+			if(l21 <= 0) {
+				var this7 = { x : 1., y : 0., z : 0.};
+				new_x = this7;
+			} else {
+				var scale1 = 1 / Math.sqrt(l21);
+				var this8 = { x : v2.x * scale1, y : v2.y * scale1, z : v2.z * scale1};
+				new_x = this8;
+			}
+			var this9 = { x : a7.e4, y : a7.e5, z : a7.e6};
+			var b3 = this9;
+			var this10 = { x : new_x.y * b3.z - new_x.z * b3.y, y : new_x.z * b3.x - new_x.x * b3.z, z : new_x.x * b3.y - new_x.y * b3.x};
+			var v3 = this10;
+			var l22 = v3.x * v3.x + v3.y * v3.y + v3.z * v3.z;
+			var new_z;
+			if(l22 <= 0) {
+				var this11 = { x : 1., y : 0., z : 0.};
+				new_z = this11;
+			} else {
+				var scale2 = 1 / Math.sqrt(l22);
+				var this12 = { x : v3.x * scale2, y : v3.y * scale2, z : v3.z * scale2};
+				new_z = this12;
+			}
+			var this13 = { x : new_z.y * new_x.z - new_z.z * new_x.y, y : new_z.z * new_x.x - new_z.x * new_x.z, z : new_z.x * new_x.y - new_z.y * new_x.x};
+			var new_y = this13;
+			a7.e0 = new_x.x;
+			a7.e1 = new_x.y;
+			a7.e2 = new_x.z;
+			a7.e4 = new_y.x;
+			a7.e5 = new_y.y;
+			a7.e6 = new_y.z;
+			a7.e8 = new_z.x;
+			a7.e9 = new_z.y;
+			a7.e10 = new_z.z;
+		}
+	}
+	,setToGrab: function(newGrab) {
+		var t = this.object;
+		this.mouseGrab = { x : t.e0 * newGrab.x + t.e1 * newGrab.y + t.e2 * newGrab.z, y : t.e4 * newGrab.x + t.e5 * newGrab.y + t.e6 * newGrab.z, z : t.e8 * newGrab.x + t.e9 * newGrab.y + t.e10 * newGrab.z};
+	}
+	,rotateToGrab: function(newGrab) {
+		var t = this.object;
+		var p = this.mouseGrab;
+		var origGrab_x = t.e0 * p.x + t.e4 * p.y + t.e8 * p.z;
+		var origGrab_y = t.e1 * p.x + t.e5 * p.y + t.e9 * p.z;
+		var origGrab_z = t.e2 * p.x + t.e6 * p.y + t.e10 * p.z;
+		var this1 = { x : origGrab_y * newGrab.z - origGrab_z * newGrab.y, y : origGrab_z * newGrab.x - origGrab_x * newGrab.z, z : origGrab_x * newGrab.y - origGrab_y * newGrab.x};
+		var axis = this1;
+		var this2 = { x : axis.x * 0.95, y : axis.y * 0.95, z : axis.z * 0.95};
+		axis = this2;
+		var angle = Math.asin(Math.sqrt(axis.x * axis.x + axis.y * axis.y + axis.z * axis.z));
+		if(angle > Math.PI / 8) {
+			angle = Math.PI / 8;
+		}
+		var l2 = axis.x * axis.x + axis.y * axis.y + axis.z * axis.z;
+		var axis1;
+		if(l2 <= 0) {
+			var this3 = { x : 1., y : 0., z : 0.};
+			axis1 = this3;
+		} else {
+			var scale = 1 / Math.sqrt(l2);
+			var this4 = { x : axis.x * scale, y : axis.y * scale, z : axis.z * scale};
+			axis1 = this4;
+		}
+		var c = Math.cos(angle);
+		var s = Math.sin(angle);
+		var C = 1 - c;
+		var xs = axis1.x * s;
+		var ys = axis1.y * s;
+		var zs = axis1.z * s;
+		var xC = axis1.x * C;
+		var yC = axis1.y * C;
+		var zC = axis1.z * C;
+		var xyC = axis1.x * yC;
+		var yzC = axis1.y * zC;
+		var zxC = axis1.z * xC;
+		var a = new canvasImageTriangle_AffineMatrix();
+		a.e0 = axis1.x * xC + c;
+		a.e4 = xyC - zs;
+		a.e8 = zxC + ys;
+		a.e12 = 0;
+		a.e1 = xyC + zs;
+		a.e5 = axis1.y * yC + c;
+		a.e9 = yzC - xs;
+		a.e13 = 0;
+		a.e2 = zxC - ys;
+		a.e6 = yzC + xs;
+		a.e10 = axis1.z * zC + c;
+		a.e14 = 0;
+		var b = this.object;
+		var a0 = a.e0;
+		var a1 = a.e1;
+		var a2 = a.e2;
+		var a4 = a.e4;
+		var a5 = a.e5;
+		var a6 = a.e6;
+		var a8 = a.e8;
+		var a9 = a.e9;
+		var a10 = a.e10;
+		var a12 = a.e12;
+		var a13 = a.e13;
+		var a14 = a.e14;
+		var b0 = b.e0;
+		var b1 = b.e1;
+		var b2 = b.e2;
+		var b4 = b.e4;
+		var b5 = b.e5;
+		var b6 = b.e6;
+		var b8 = b.e8;
+		var b9 = b.e9;
+		var b10 = b.e10;
+		var b12 = b.e12;
+		var b13 = b.e13;
+		var b14 = b.e14;
+		var a3 = new canvasImageTriangle_AffineMatrix();
+		a3.e0 = a0 * b0 + a4 * b1 + a8 * b2;
+		a3.e4 = a0 * b4 + a4 * b5 + a8 * b6;
+		a3.e8 = a0 * b8 + a4 * b9 + a8 * b10;
+		a3.e12 = a0 * b12 + a4 * b13 + a8 * b14 + a12;
+		a3.e1 = a1 * b0 + a5 * b1 + a9 * b2;
+		a3.e5 = a1 * b4 + a5 * b5 + a9 * b6;
+		a3.e9 = a1 * b8 + a5 * b9 + a9 * b10;
+		a3.e13 = a1 * b12 + a5 * b13 + a9 * b14 + a13;
+		a3.e2 = a2 * b0 + a6 * b1 + a10 * b2;
+		a3.e6 = a2 * b4 + a6 * b5 + a10 * b6;
+		a3.e10 = a2 * b8 + a6 * b9 + a10 * b10;
+		a3.e14 = a2 * b12 + a6 * b13 + a10 * b14 + a14;
+		this.object = a3;
+		var a7 = this.object;
+		var this5 = { x : a7.e0, y : a7.e1, z : a7.e2};
+		var v = this5;
+		var l21 = v.x * v.x + v.y * v.y + v.z * v.z;
+		var new_x;
+		if(l21 <= 0) {
+			var this6 = { x : 1., y : 0., z : 0.};
+			new_x = this6;
+		} else {
+			var scale1 = 1 / Math.sqrt(l21);
+			var this7 = { x : v.x * scale1, y : v.y * scale1, z : v.z * scale1};
+			new_x = this7;
+		}
+		var this8 = { x : a7.e4, y : a7.e5, z : a7.e6};
+		var b3 = this8;
+		var this9 = { x : new_x.y * b3.z - new_x.z * b3.y, y : new_x.z * b3.x - new_x.x * b3.z, z : new_x.x * b3.y - new_x.y * b3.x};
+		var v1 = this9;
+		var l22 = v1.x * v1.x + v1.y * v1.y + v1.z * v1.z;
+		var new_z;
+		if(l22 <= 0) {
+			var this10 = { x : 1., y : 0., z : 0.};
+			new_z = this10;
+		} else {
+			var scale2 = 1 / Math.sqrt(l22);
+			var this11 = { x : v1.x * scale2, y : v1.y * scale2, z : v1.z * scale2};
+			new_z = this11;
+		}
+		var this12 = { x : new_z.y * new_x.z - new_z.z * new_x.y, y : new_z.z * new_x.x - new_z.x * new_x.z, z : new_z.x * new_x.y - new_z.y * new_x.x};
+		var new_y = this12;
+		a7.e0 = new_x.x;
+		a7.e1 = new_x.y;
+		a7.e2 = new_x.z;
+		a7.e4 = new_y.x;
+		a7.e5 = new_y.y;
+		a7.e6 = new_y.z;
+		a7.e8 = new_z.x;
+		a7.e9 = new_z.y;
+		a7.e10 = new_z.z;
+		var s1 = 1000 / this.dt;
+		var this13 = { x : axis.x * s1, y : axis.y * s1, z : axis.z * s1};
+		this.omega = this13;
+	}
+	,updateZoom: function() {
+		if(this.bigger) {
+			this.distance -= 2.0 * this.dt / 1000;
+		}
+		if(this.smaller) {
+			this.distance += 2.0 * this.dt / 1000;
+		}
+		if(this.distance < 0) {
+			this.distance = 0.;
+		}
+		this.camera.e14 = 0.2 + this.distance;
+	}
+	,updateTime: function() {
+		var now = new Date().getTime() | 0;
+		this.dt = now - this.lastTime;
+		this.lastTime = now;
+		if(this.dt > 100) {
+			this.dt = 100;
+		}
+		if(this.dt < 1) {
+			this.dt = 1;
+		}
+	}
+	,screenToSpherePt: function(x,y) {
+		var this1 = { x : this.camera.e12, y : this.camera.e13, z : this.camera.e14 + 1.};
+		var p = this1;
+		var this2 = { x : this.camera.e0, y : this.camera.e1, z : this.camera.e2};
+		var r = this2;
+		var this3 = { x : this.camera.e4, y : this.camera.e5, z : this.camera.e6};
+		var up = this3;
+		var this4 = { x : this.camera.e8, y : this.camera.e9, z : this.camera.e10};
+		var right = this4;
+		var tan_half = Math.tan(this.hFov / 2);
+		var s = x * tan_half;
+		var this5 = { x : right.x * s, y : right.y * s, z : right.z * s};
+		var b = this5;
+		var this6 = { x : r.x + b.x, y : r.y + b.y, z : r.z + b.z};
+		r = this6;
+		var s1 = y * tan_half;
+		var this7 = { x : up.x * s1, y : up.y * s1, z : up.z * s1};
+		var b1 = this7;
+		var this8 = { x : r.x + b1.x, y : r.y + b1.y, z : r.z + b1.z};
+		r = this8;
+		var l2 = r.x * r.x + r.y * r.y + r.z * r.z;
+		if(l2 <= 0) {
+			var this9 = { x : 1., y : 0., z : 0.};
+			r = this9;
+		} else {
+			var scale = 1 / Math.sqrt(l2);
+			var this10 = { x : r.x * scale, y : r.y * scale, z : r.z * scale};
+			r = this10;
+		}
+		if(p.x * p.x + p.y * p.y + p.z * p.z < 1) {
+			return null;
+		} else {
+			var ray = -(p.x * r.x + p.y * r.y + p.z * r.z);
+			if(ray < 0) {
+				return null;
+			} else {
+				var this11 = { x : r.x * ray, y : r.y * ray, z : r.z * ray};
+				var b2 = this11;
+				var this12 = { x : p.x + b2.x, y : p.y + b2.y, z : p.z + b2.z};
+				var perp = this12;
+				if(perp.x * perp.x + perp.y * perp.y + perp.z * perp.z >= 0.999999) {
+					var l21 = perp.x * perp.x + perp.y * perp.y + perp.z * perp.z;
+					if(l21 <= 0) {
+						var this13 = { x : 1., y : 0., z : 0.};
+						return this13;
+					} else {
+						var scale1 = 1 / Math.sqrt(l21);
+						var this14 = { x : perp.x * scale1, y : perp.y * scale1, z : perp.z * scale1};
+						return this14;
+					}
+				} else {
+					var e = Math.sqrt(1 - (perp.x * perp.x + perp.y * perp.y + perp.z * perp.z));
+					var s2 = ray - e;
+					var this15 = { x : r.x * s2, y : r.y * s2, z : r.z * s2};
+					var b3 = this15;
+					var this16 = { x : p.x + b3.x, y : p.y + b3.y, z : p.z + b3.z};
+					var hit = this16;
+					var l22 = hit.x * hit.x + hit.y * hit.y + hit.z * hit.z;
+					if(l22 <= 0) {
+						var this17 = { x : 1., y : 0., z : 0.};
+						return this17;
+					} else {
+						var scale2 = 1 / Math.sqrt(l22);
+						var this18 = { x : hit.x * scale2, y : hit.y * scale2, z : hit.z * scale2};
+						return this18;
+					}
+				}
+			}
+		}
+	}
+	,__class__: canvasImageTriangle_World
 };
 var haxe_IMap = function() { };
 haxe_IMap.__name__ = true;
