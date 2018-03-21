@@ -1349,7 +1349,8 @@ canvasImageTriangle_PerspectiveTri.prototype = {
 		var zdepth20 = Math.abs(c.z - a.z);
 		var factor = this.options.subdivide_factor;
 		var subdiv = (edgelen01 * zdepth01 > factor ? 1 : 0) + (edgelen12 * zdepth12 > factor ? 2 : 0) + (edgelen20 * zdepth20 > factor ? 4 : 0);
-		if(depth_count != null) {
+		var truthy = !(depth_count == 0 && depth_count == null);
+		if(truthy) {
 			--depth_count;
 			if(depth_count == null) {
 				subdiv = 0;
@@ -1805,7 +1806,8 @@ canvasImageTriangle_PerspectiveTri.prototype = {
 		var p = { x : (a.x + b.x) / 2, y : (a.y + b.y) / 2, z : (a.z + b.z) / 2, u : (a.u + b.u) / 2, v : (a.v + b.v) / 2};
 		var p1 = { x : (b.x + c.x) / 2, y : (b.y + c.y) / 2, z : (b.z + c.z) / 2, u : (b.u + c.u) / 2, v : (b.v + c.v) / 2};
 		var p2 = { x : (c.x + a.x) / 2, y : (c.y + a.y) / 2, z : (c.z + a.z) / 2, u : (c.u + a.u) / 2, v : (c.v + a.v) / 2};
-		if(depth_count != -1) {
+		var truthy = !(depth_count == 0 && depth_count == null);
+		if(truthy) {
 			--depth_count;
 		}
 		this.draw(a,p,p2,depth_count);
