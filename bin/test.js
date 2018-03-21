@@ -21,7 +21,7 @@ var Main = function() {
 	this.down = false;
 	this.y = 0.;
 	this.x = 0.;
-	this.renderOn = false;
+	this.renderOn = true;
 	this.picture = "nyt_nov5.jpg";
 	var this1;
 	var canvas = window.document.createElement("canvas");

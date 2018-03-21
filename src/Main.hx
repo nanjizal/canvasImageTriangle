@@ -40,7 +40,7 @@ class Main  {
     var image:              ImageElement;
     var options:            Options;
     var picture:            String = 'nyt_nov5.jpg';
-    var renderOn            = false;
+    var renderOn            = true;
     var x                   = 0.;
     var y                   = 0.;
     var down                = false;
