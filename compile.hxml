@@ -1,4 +1,4 @@
--js bin/test.js
+-js bin/canvasImageTriangle.js
 -cp src
 -lib htmlHelper;
 -debug
@@ -6,5 +6,5 @@
 #-D js-flatten 
 #-dce full
 --next
--cmd echo '<!DOCTYPE html><meta charset="UTF-8"><html><body><script src="test.js"></script></body></html>' >bin/index.html
+-cmd echo '<!DOCTYPE html><meta charset="UTF-8"><html><body><script src="canvasImageTriangle.js"></script></body></html>' >bin/index.html
 -cmd open bin/index.html
