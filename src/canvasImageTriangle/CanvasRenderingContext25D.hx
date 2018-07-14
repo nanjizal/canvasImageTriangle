@@ -19,13 +19,14 @@ abstract CanvasRenderingContext25D( CanvasRenderingContext2D ) from CanvasRender
                          , ax:  Float, ay:  Float, bx:  Float, by:  Float, cx:  Float, cy:  Float
                          , asx: Float, asy: Float, bsx: Float, bsy: Float, csx: Float, csy: Float ) {
         this.save();
-        // Clip the output to the on-screen triangle boundaries.
+        // Clip the output to the on-screen triangle boundaries.       
         this.beginPath();
         this.moveTo( ax, ay ); // ax, ay = x0, y0    asx, asy = sx0, sy0
-        this.lineTo( bx, by ); // bx, by = x1, y1    bsx, bsy = sx1, sy1
+        this.lineTo( bx, by  ); // bx, by = x1, y1    bsx, bsy = sx1, sy1
         this.lineTo( cx, cy ); // cx, cy = x2, y2    csx, csy = sx2, sy2
         this.closePath();
-      //ctx.stroke();//xxxxxxx for wireframe
+        
+        //this.stroke();//xxxxxxx for wireframe
         this.clip();
 
         /*
@@ -74,21 +75,17 @@ abstract CanvasRenderingContext25D( CanvasRenderingContext2D ) from CanvasRender
         return if ( denom == 0 ){
             null;
         } else {
-            var bcy = by - cy; // byMcy
-            var cbx = cx - bx; // cxMbx
+            var bcy = by - cy;
+            var cbx = cx - bx;
             var bcsy = bsy - csy;
             var bcsx = bsx - csx;
             var m11 = - ( asy * cbx - bsy * cx + csy * bx + bcsy * ax ) / denom;
-            
             var m12 = ( bsy * cy + asy * bcy - csy * by - bcsy * ay ) / denom;
-            
             var m21 = ( asx * cbx - bsx * cx + csx * bx + bcsx * ax ) / denom;
-            
             var m22 = - ( bsx * cy + asx * bcy - csx * by - bcsx * ay ) / denom;
-            
             var xcbbc = csx * bsy - bsx * csy;
-            var dx = ( asx * (csy * bx - bsy * cx ) + asy *( bsx * cx - csx * by ) + xcbbc * ax) / denom;
-            var dy = ( asx * (csy * by - bsy * cy ) + asy *( bsx * cx - csx * by ) + xcbbc * ay) / denom;
+            var dx = ( asx * (csy * bx - bsy * cx ) + asy *( bsx * cx - csx * bx ) + xcbbc * ax) / denom;
+            var dy = ( asx * (csy * by - bsy * cy ) + asy *( bsx * cy - csx * by ) + xcbbc * ay) / denom;
             this.transform( m11, m12, m21, m22, dx, dy );
             // Draw the whole image.  Transform and clip will map it onto the
             // correct output triangle.

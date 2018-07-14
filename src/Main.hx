@@ -81,7 +81,7 @@ class Main  {
     function initOpitions(): Options {
         return {    draw_backfaces:     true
                 ,   whiteout_alpha:     1
-                ,   wireframe:          true
+                ,   wireframe:          false
                 ,   subdivide_factor:   10.0
                 ,   nonadaptive_depth:  0 
             };

@@ -13,5 +13,5 @@
 // column vectors, and a transform is "Mx" where M is the matrix and x
 // is the vector.
 // 
-//  Ported to Haxe by Nanjizal 20 March 2018
+//  Ported to Haxe by Nanjizal 20 March 2018 ( fixes 14 July )
 //
