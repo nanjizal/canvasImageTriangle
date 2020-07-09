@@ -1,0 +1,25 @@
+# lime dox flags
+-D display
+-D doc_gen
+-D lime-doc-gen
+
+-D doc-gen
+
+# can't currently generate nme dox's.
+-lib lime
+#-lib nme
+#-lib geom
+--macro include('canvasImageTriangle')
+--macro include('canvasImageTriangle.extraGeom')
+-cp src
+-main canvasImageTriangle.upkeep.Doc
+--no-output
+
+--each
+
+--next
+-xml upkeep/js.xml
+-js foo
+
+
+# -D dump==pretty

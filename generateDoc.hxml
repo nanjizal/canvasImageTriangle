@@ -1,0 +1,5 @@
+-D haxe4
+-cmd haxe generateJs.hxml
+-cmd haxelib run dox -i upkeep --title "canvasImageTriangle API documentation" -D themeColor 0xCCFFFF -D source-path https://github.com/nanjizal/canvasImageTriangle/tree/master/src/ --toplevel-package canvasImageTriangle
+-cmd cd pages
+-cmd open index.html

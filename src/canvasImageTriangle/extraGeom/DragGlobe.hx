@@ -1,6 +1,6 @@
-package cameraImageTriange.extraGeom; // geom.extra;
-import geom.Matrix4x3;
-import geom.Matrix1x4;
+package canvasImageTriangle.extraGeom; // geom.extra;
+import geom.matrix.Matrix4x3;
+import geom.matrix.Matrix1x4;
 
 // This is an unfinished attempt an more generalized DragGlobe inline with geom library, moved back from geom as does not fit remit.
  
